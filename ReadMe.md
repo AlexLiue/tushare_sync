@@ -1,7 +1,7 @@
 # Sync Tushare Data to MySQL - 股票数据获取
-- 同步 Tushare 的股票交易数据到本地 MySQL 进行存储, 采用 T + 1 同步方式
+- 同步 Tushare 的股票交易数据到本地 MySQL 进行存储, 采用 T + 0 同步方式
 - 首先从 Tushare 拉取全量历史数据
-- 然后每日从 Tushare 拉取昨日增量数据
+- 然后每日下午 从 Tushare 拉取当日增量数据
 - 数据包含: A股、港股、日线、周线、月线等
 
 ## 使用方法
@@ -80,16 +80,14 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | money_flow_hsgt | moneyflow_hsgt | 沪深股票-行情数据-沪深港通资金流向  |  
 | hsgt_top10      | hsgt_top10     | 沪深股票-行情数据-沪深股通十大成交股 |  
 | ggt_top10       | ggt_top10      | 沪深股票-行情数据-港股通十大成交股 |
-| ggt_daily       | ggt_daily      | 沪深股票-行情数据-港股通每日成交统计 |  
+| ggt_daily       | ggt_daily      | 沪深股票-行情数据-港股通每日成交统计 |
+| bak_daily       | bak_daily      | 沪深股票-行情数据-备用行情 |  
+
 
 
 
 ## 其他
-欢迎提问或 Bug / PR 提交
 
-
-
-
-接口：
+欢迎提问或 提交 Bug / PR   
 
 
