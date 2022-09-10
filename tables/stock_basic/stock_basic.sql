@@ -7,7 +7,7 @@ CREATE TABLE `stock_basic`
     `id`          bigint NOT NULL AUTO_INCREMENT COMMENT ' 主键 ',
     `ts_code`     varchar(16)                                                  DEFAULT NULL COMMENT ' TS代码 ',
     `symbol`      varchar(16)                                                   DEFAULT NULL COMMENT ' 股票代码 ',
-    `name`        varchar(32)                                                   DEFAULT NULL COMMENT ' 股票名称 ',
+    `name`        varchar(64)                                                   DEFAULT NULL COMMENT ' 股票名称 ',
     `area`        varchar(32)                                                   DEFAULT NULL COMMENT ' 地域 ',
     `industry`    varchar(32)                                                   DEFAULT NULL COMMENT ' 所属行业 ',
     `fullname`    varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL COMMENT ' 股票全称 ',

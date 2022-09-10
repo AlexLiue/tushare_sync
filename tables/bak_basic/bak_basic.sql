@@ -6,7 +6,7 @@ CREATE TABLE `bak_basic`
     `id`                bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
     `trade_date`        date        DEFAULT NULL COMMENT '交易日期',
     `ts_code`           varchar(16) DEFAULT NULL COMMENT 'TS股票代码',
-    `name`              varchar(32) DEFAULT NULL COMMENT '股票名称',
+    `name`              varchar(64) DEFAULT NULL COMMENT '股票名称',
     `industry`          varchar(32) DEFAULT NULL COMMENT '所属行业',
     `area`              varchar(32) DEFAULT NULL COMMENT '地域',
     `pe`                double      DEFAULT NULL COMMENT '市盈率（动）',
