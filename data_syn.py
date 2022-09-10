@@ -52,7 +52,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='sync mode args')
     parser.add_argument("--mode", type=str, default='append', help='同步模式: init(初始化模式), append(增量追加模式)')
     args = parser.parse_args()
-    mode = args.mode.trim
+    mode = args.mode
     if mode == 'init':
         init()
     elif mode == 'append':
