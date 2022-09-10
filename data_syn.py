@@ -1,10 +1,9 @@
 """
 数据同步程序入口
-
+要求 Tushare 积分 2000 以上
 """
+
 import argparse
-
-
 from tables.stock_basic import stock_basic
 from tables.trade_cal import trade_cal
 from tables.name_change import name_change
@@ -19,6 +18,8 @@ from tables.stk_limit import stk_limit
 from tables.money_flow_hsgt import money_flow_hsgt
 from tables.hsgt_top10 import hsgt_top10
 from tables.ggt_top10 import ggt_top10
+from tables.ggt_daily import ggt_daily
+
 
 
 # 全量历史初始化
@@ -37,7 +38,7 @@ def init():
     money_flow_hsgt.init()  # 沪深股票-行情数据-沪深港通资金流向
     hsgt_top10.init()  # 沪深股票-行情数据-沪深股通十大成交股
     ggt_top10.init()  # 沪深股票-行情数据-港股通十大成交股
-
+    ggt_daily.init()  # 沪深股票-行情数据-港股通每日成交统计
 
 
 
@@ -57,7 +58,7 @@ def append():
     money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
     hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
     ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
-
+    ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
 
 
 def use_age():
