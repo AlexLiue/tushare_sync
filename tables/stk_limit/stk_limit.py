@@ -1,18 +1,18 @@
 """
 ============================
 # -*- coding: utf-8 -*-
-# @Time    : 2022/9/10 08:18
+# @Time    : 2022/9/10 10:31
 # @Author  : PcLiu
-# @FileName: money_flow.py
+# @FileName: stk_limit.py
 ===========================
 
-接口：money_flow，可以通过数据工具调试和查看数据。
-描述：获取沪深A股票资金流向数据，分析大单小单成交情况，用于判别资金动向
-限量：单次最大提取5000行记录，总量不限制
-积分：用户需要至少2000积分才可以调取，基础积分有流量控制，积分越多权限越大，请自行提高积分，具体请参阅积分获取办法
-tushare 接口说明：https://tushare.pro/document/2?doc_id=170
+沪深股票-行情数据-每日涨跌停价格
+接口：stk_limit
+描述：获取全市场（包含A/B股和基金）每日涨跌停价格，包括涨停价格，跌停价格等，每个交易日8点40左右更新当日股票涨跌停价格。
+限量：单次最多提取5800条记录，可循环调取，总量不限制
+积分：用户积600积分可调取，单位分钟有流控，积分越高流量越大，请自行提高积分，具体请参阅积分获取办法
+tushare 接口说明： https://tushare.pro/document/2?doc_id=183
 """
-
 
 import os
 import time
@@ -44,44 +44,28 @@ def append():
 def exec_syn(trade_date, start_date, end_date, limit, interval):
     ts_api = get_tushare_api()
     connection = get_mock_connection()
-    logger = get_logger('money_flow', 'data_syn.log')
+    logger = get_logger('stk_limit', 'data_syn.log')
 
     offset = 0
     while True:
-        logger.info("Query monthly from tushare with api[moneyflow] trade_date[%s] start_date[%s] end_date[%s] "
+        logger.info("Query monthly from tushare with api[stk_limit] trade_date[%s] start_date[%s] end_date[%s] "
                     "from offset[%d] limit[%d]" % (trade_date, start_date, end_date, offset, limit))
-        data = ts_api.moneyflow(**{
+        data = ts_api.stk_limit(**{
             "ts_code": "",
             "trade_date": trade_date,
             "start_date": start_date,
             "end_date": end_date,
-            "limit": limit,
-            "offset": offset
+            "offset": offset,
+            "limit": limit
         }, fields=[
-            "ts_code",
             "trade_date",
-            "buy_sm_vol",
-            "buy_sm_amount",
-            "sell_sm_vol",
-            "sell_sm_amount",
-            "buy_md_vol",
-            "buy_md_amount",
-            "sell_md_vol",
-            "sell_md_amount",
-            "buy_lg_vol",
-            "buy_lg_amount",
-            "sell_lg_vol",
-            "sell_lg_amount",
-            "buy_elg_vol",
-            "buy_elg_amount",
-            "sell_elg_vol",
-            "sell_elg_amount",
-            "net_mf_vol",
-            "net_mf_amount",
-            "trade_count"
+            "ts_code",
+            "up_limit",
+            "down_limit",
+            "pre_close"
         ])
-        logger.info('Write [%d] records into table [money_flow] with [%s]' % (data.iloc[:, 0].size, connection.engine))
-        data.to_sql('money_flow', connection, index=False, if_exists='append', chunksize=5000)
+        logger.info('Write [%d] records into table [stk_limit] with [%s]' % (data.iloc[:, 0].size, connection.engine))
+        data.to_sql('stk_limit', connection, index=False, if_exists='append', chunksize=5000)
 
         size = data.iloc[:, 0].size
         offset = offset + size

@@ -24,5 +24,6 @@ CREATE TABLE `money_flow`
     `sell_elg_amount` double      DEFAULT NULL COMMENT '特大单卖出金额（万元）',
     `net_mf_vol`      int         DEFAULT NULL COMMENT '净流入量（手）',
     `net_mf_amount`   double      DEFAULT NULL COMMENT '净流入额（万元）',
+    `trade_count`     int         DEFAULT NULL COMMENT '交易笔数',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='沪深股票-行情数据-个股资金流向';
