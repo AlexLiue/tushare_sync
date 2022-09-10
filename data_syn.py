@@ -61,13 +61,15 @@ def append():
     ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
 
 
+
+
 def use_age():
     print('Useage: python data_syn.py [--mode  init|append ]')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='sync mode args')
-    parser.add_argument("--mode", type=str, default='append', help='同步模式: init(初始化模式), append(增量追加模式)')
+    parser.add_argument("--mode", type=str, default='', help='同步模式: init(初始化模式), append(增量追加模式)')
     args = parser.parse_args()
     mode = args.mode
     if mode == 'init':
