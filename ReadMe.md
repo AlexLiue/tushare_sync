@@ -3,7 +3,7 @@
 
 ## 使用方法
 
-### Step1: 修改配置文件信息(本地数据库地址 / Tushare 账号 token), 配置文件模板参考 [`application.ini.example`](application.ini.example)
+### Step1: 修改配置文件信息(本地数据库地址 / Tushare 账号 token)
 ```shell
 mv application.ini.example application.ini
 # 然后修改 application.ini 中的 mysql 的地址信息 和 Tushare 账号 token
@@ -22,8 +22,7 @@ python data_syn.py --mode init
 ```shell
 python data_syn.py --mode append
 ```
-说明1: 部分表数据量相对较小火不具备增量同步逻辑，因此选择每日全量同步
-
+说明1: 部分表数据量相对较小或者不具备增量同步逻辑，因此选择每日全量同步
 
 
 ## 已完成的同步表
@@ -46,4 +45,4 @@ python data_syn.py --mode append
 
 
 ## 其他
-欢迎提问或 Bug 提交
+欢迎提问或 Bug / PR 提交
