@@ -50,21 +50,21 @@ ssh://anaconda@47.240.xxx.xxx:22/home/anaconda/anaconda3/bin/python -u /app/stoc
 
 ## 已完成的同步表
 
-| 表名                 |      接口名       | 表说明                                         |  
-|:-------------------|:--------------:|:--------------------------------------------|  
-| stock_basic        |  stock_basic   | 沪深股票-基础信息-股票列表                              |  
-| trade_cal          |   trade_cal    | 沪深股票-基础信息-交易日历                              |  
-| name_change        |   namechange   | 沪深股票-基础信息-股票曾用名                             |  
-| hs_const           |    hs_const    | 沪深股票-基础信息-沪深股通成份股                           |
-| stk_rewards        |  stk_rewards   | 沪深股票-基础信息-管理层薪酬和持股（数据量较大,不存在日更新逻辑, 选择性同步）   |  
-| bak_basic          |   bak_basic    | 沪深股票-基础信息-备用列表(数据量较大, 2000积分每分钟只能调用2次,独立处理) |  
-| daily              |     daily      | 沪深股票-行情数据-A股日线行情                            |  
-| weekly             |     weekly     | 沪深股票-行情数据-A股周线行情                            |  
-| monthly            |    monthly     | 沪深股票-行情数据-A股月线行情                            |  
-| money_flow         |   moneyflow    | 沪深股票-行情数据-个股资金流向                            |  
-| stk_limit          |   stk_limit    | 沪深股票-行情数据-每日涨跌停价格                           |  
-| money_flow_hsgt    | moneyflow_hsgt |  沪深股票-行情数据-沪深港通资金流向            |  
-| A                  |       B        | C                                           |  
+| 表名                 |         接口名         | 表说明                                                        |  
+|:-------------------|:-------------------:|:-----------------------------------------------------------|  
+| stock_basic        |     stock_basic     | 沪深股票-基础信息-股票列表                                             |  
+| trade_cal          |      trade_cal      | 沪深股票-基础信息-交易日历                                             |  
+| name_change        |     namechange      | 沪深股票-基础信息-股票曾用名                                            |  
+| hs_const           |      hs_const       | 沪深股票-基础信息-沪深股通成份股                                          |
+| stk_rewards        |     stk_rewards     | 沪深股票-基础信息-管理层薪酬和持股（数据量较大,不存在日更新逻辑, 选择性同步）     |  
+| bak_basic          |      bak_basic      | 沪深股票-基础信息-备用列表(数据量较大, 2000积分每分钟只能调用2次,独立处理)     |  
+| daily              |        daily        | 沪深股票-行情数据-A股日线行情                                           |  
+| weekly             |       weekly        | 沪深股票-行情数据-A股周线行情                                           |  
+| monthly            |       monthly       | 沪深股票-行情数据-A股月线行情                                           |  
+| money_flow         |      moneyflow      | 沪深股票-行情数据-个股资金流向                                           |  
+| stk_limit          |      stk_limit      | 沪深股票-行情数据-每日涨跌停价格                                          |  
+| money_flow_hsgt    |   moneyflow_hsgt    | 沪深股票-行情数据-沪深港通资金流向                                         |  
+| hsgt_top10         |   hsgt_top10        | 沪深股票-行情数据-沪深股通十大成交股                                        |  
 
 
 ## 其他

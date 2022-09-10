@@ -15,6 +15,7 @@ from tables.monthly import monthly
 from tables.money_flow import money_flow
 from tables.stk_limit import stk_limit
 from tables.money_flow_hsgt import money_flow_hsgt
+from tables.hsgt_top10 import hsgt_top10
 
 
 # 全量历史初始化
@@ -31,6 +32,8 @@ def init():
     money_flow.init()  # 沪深股票-行情数据-个股资金流向
     stk_limit.init()  # 沪深股票-行情数据-每日涨跌停价格
     money_flow_hsgt.init()  # 沪深股票-行情数据-沪深港通资金流向
+    hsgt_top10.init()  # 沪深股票-行情数据-沪深股通十大成交股
+
 
 
 # 增量数据追加同步
@@ -47,7 +50,7 @@ def append():
     money_flow.append()  # 沪深股票-行情数据-个股资金流向
     stk_limit.append()  # 沪深股票-行情数据-每日涨跌停价格
     money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
-
+    hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
 
 def use_age():
     print('Useage: python data_syn.py [--mode  init|append ]')
