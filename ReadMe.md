@@ -65,7 +65,10 @@ ssh://anaconda@47.240.xxx.xxx:22/home/anaconda/anaconda3/bin/python -u /app/stoc
 | stk_limit       | stk_limit      | 沪深股票-行情数据-每日涨跌停价格   |  
 | money_flow_hsgt | moneyflow_hsgt | 沪深股票-行情数据-沪深港通资金流向  |  
 | hsgt_top10      | hsgt_top10     | 沪深股票-行情数据-沪深股通十大成交股 |  
-| ggt_top10       | ggt_top10      | 沪深股票-行情数据-港股通十大成交股 |  
+| ggt_top10       | ggt_top10      | 沪深股票-行情数据-港股通十大成交股 |
+| ggt_daily       | ggt_daily      | 沪深股票-行情数据-港股通每日成交统计 |  
+
+
 
 ## 其他
 欢迎提问或 Bug / PR 提交
