@@ -76,6 +76,6 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
 
 
 if __name__ == '__main__':
-    append()
+    init()
 
 

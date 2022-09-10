@@ -13,7 +13,8 @@ from tables.daily import daily
 from tables.weekly import weekly
 from tables.monthly import monthly
 from tables.money_flow import money_flow
-
+from tables.stk_limit import stk_limit
+from tables.money_flow_hsgt import money_flow_hsgt
 
 
 # 全量历史初始化
@@ -28,6 +29,8 @@ def init():
     weekly.init()  # 沪深股票-行情数据-A股周线行情
     monthly.init()  # 沪深股票-行情数据-A股月线行情
     money_flow.init()  # 沪深股票-行情数据-个股资金流向
+    stk_limit.init()  # 沪深股票-行情数据-每日涨跌停价格
+    money_flow_hsgt.init()  # 沪深股票-行情数据-沪深港通资金流向
 
 
 # 增量数据追加同步
@@ -42,6 +45,8 @@ def append():
     weekly.append()  # 沪深股票-行情数据-A股周线行情
     monthly.append()  # 沪深股票-行情数据-A股月线行情
     money_flow.append()  # 沪深股票-行情数据-个股资金流向
+    stk_limit.append()  # 沪深股票-行情数据-每日涨跌停价格
+    money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
 
 
 def use_age():
@@ -59,5 +64,3 @@ if __name__ == '__main__':
         append()
     else:
         use_age()
-
-
