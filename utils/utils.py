@@ -38,7 +38,7 @@ def get_mock_connection():
 def get_tushare_api():
     cfg = get_cfg()
     token = cfg['tushare']['token']
-    return ts.pro_api(token)
+    return ts.pro_api(token=token, timeout=300)
 
 
 # 获取日志文件打印输出对象

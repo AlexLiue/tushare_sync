@@ -58,13 +58,13 @@ def init():
                 "hold_vol"
             ])
             logger.info('Write [%d] records into table [stk_rewards] with [%s]' %
-                         (data.iloc[:, 0].size, connection.engine))
+                         (data.last_valid_index()+1, connection.engine))
             data.to_sql('stk_rewards', connection, index=False, if_exists='append', chunksize=5000)
-            size2 = data.iloc[:, 0].size
+            size2 = data.last_valid_index()+1
             offset2 = offset2 + size2
             if size2 < limit2:
                 break
-        size = df_ts_code.iloc[:, 0].size
+        size = df_ts_code.last_valid_index()+1
         offset1 = offset1 + size
         if size < limit1:
             break

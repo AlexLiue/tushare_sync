@@ -29,7 +29,7 @@ def init():
     now = datetime.datetime.now()
     end_date = now.strftime('%Y%m%d')
 
-    exec_syn(trade_date='', start_date=start_date, end_date=end_date, limit=5000, interval=0)
+    exec_syn(trade_date='', start_date=start_date, end_date=end_date, limit=5000, interval=5)
 
 
 # trade_date: 交易日期, 空值时匹配所有日期 (增量单日增加参数)
@@ -43,7 +43,7 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
     logger = get_logger('daily', 'data_syn.log')
     offset = 0
     while True:
-        logger.info("Query daily from tushare with api[daily] trade_date[%s] start_date[%s] end_date[%s] "
+        logger.info("Query daily from tushare with api[daily] trade_date[%s] start_date[%s] end_date[%s] " 
                     "from offset[%d] limit[%d]" % (trade_date, start_date, end_date, offset, limit))
 
         data = ts_api.daily(**{
@@ -66,10 +66,10 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
             "vol",
             "amount"
         ])
-        logger.info('Write [%d] records into table [daily] with [%s]' % (data.iloc[:, 0].size, connection.engine))
+        logger.info('Write [%d] records into table [daily] with [%s]' % (data.last_valid_index()+1, connection.engine))
         data.to_sql('daily', connection, index=False, if_exists='append', chunksize=5000)
 
-        size = data.iloc[:, 0].size
+        size = data.last_valid_index()+1
         offset = offset + size
         if size < limit:
             break
@@ -81,7 +81,7 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
 def append():
     now = datetime.datetime.now()
     date = now.strftime('%Y%m%d')
-    exec_syn(trade_date=date, start_date='', end_date='', limit=5000, interval=0)
+    exec_syn(trade_date=date, start_date='', end_date='', limit=5000, interval=5)
 
 
 if __name__ == '__main__':

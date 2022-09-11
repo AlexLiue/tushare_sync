@@ -64,10 +64,10 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
             "north_money",
             "south_money"
         ])
-        logger.info('Write [%d] records into table [money_flow_hsgt] with [%s]' % (data.iloc[:, 0].size, connection.engine))
+        logger.info('Write [%d] records into table [money_flow_hsgt] with [%s]' % (data.last_valid_index()+1, connection.engine))
         data.to_sql('money_flow_hsgt', connection, index=False, if_exists='append', chunksize=5000)
 
-        size = data.iloc[:, 0].size
+        size = data.last_valid_index()+1
         offset = offset + size
         if size < limit:
             break

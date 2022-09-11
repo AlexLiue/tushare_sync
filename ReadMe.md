@@ -1,5 +1,5 @@
 # Sync Tushare Data to MySQL - 股票数据获取
-- 同步 Tushare 的股票交易数据到本地 MySQL 进行存储, 采用 T + 0 同步方式
+- 同步 [Tushare](https://tushare.pro) 的股票交易数据到本地 MySQL 进行存储, 采用 T + 0 同步方式
 - 首先从 Tushare 拉取全量历史数据
 - 然后每日下午 从 Tushare 拉取当日增量数据
 - 数据包含: A股、港股、日线、周线、月线等

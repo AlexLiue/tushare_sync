@@ -28,14 +28,14 @@ def init():
     now = datetime.datetime.now()
     end_date = now.strftime('%Y%m%d')
 
-    exec_syn(trade_date='', start_date=start_date, end_date=end_date, limit=4500, interval=0)
+    exec_syn(trade_date='', start_date=start_date, end_date=end_date, limit=4500, interval=2)
 
 
 # 增量追加表数据
 def append():
     now = datetime.datetime.now()
     date = now.strftime('%Y%m%d')
-    exec_syn(trade_date=date, start_date='', end_date='', limit=5000, interval=0)
+    exec_syn(trade_date=date, start_date='', end_date='', limit=5000, interval=2)
 
 
 # trade_date: 交易日期, 空值时匹配所有日期 (增量单日增加参数)
@@ -72,10 +72,10 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
             "vol",
             "amount"
         ])
-        logger.info('Write [%d] records into table [weekly] with [%s]' % (data.iloc[:, 0].size, connection.engine))
+        logger.info('Write [%d] records into table [weekly] with [%s]' % (data.last_valid_index()+1, connection.engine))
         data.to_sql('weekly', connection, index=False, if_exists='append', chunksize=5000)
 
-        size = data.iloc[:, 0].size
+        size = data.last_valid_index()+1
         offset = offset + size
         if size < limit:
             break

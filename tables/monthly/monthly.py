@@ -71,10 +71,10 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
             "vol",
             "amount"
         ])
-        logger.info('Write [%d] records into table [monthly] with [%s]' % (data.iloc[:, 0].size, connection.engine))
+        logger.info('Write [%d] records into table [monthly] with [%s]' % (data.last_valid_index()+1, connection.engine))
         data.to_sql('monthly', connection, index=False, if_exists='append', chunksize=5000)
 
-        size = data.iloc[:, 0].size
+        size = data.last_valid_index()+1
         offset = offset + size
         if size < limit:
             break

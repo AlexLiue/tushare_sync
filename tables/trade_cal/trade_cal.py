@@ -48,5 +48,5 @@ def sync(start, end, if_exists):
     logger.info("Query data from tushare with api[%s], start[%s]- end[%s], fields[%s]" % (api_name, start, end, fields))
     data = ts_api.query(api_name, fields, start_date=start, end_date=end)
 
-    logger.info('Write [%d] records into table [trade_cal] with [%s]' % (data.iloc[:, 0].size, connection.engine))
+    logger.info('Write [%d] records into table [trade_cal] with [%s]' % (data.last_valid_index()+1, connection.engine))
     data.to_sql('trade_cal', connection, index=False, if_exists=if_exists, chunksize=5000)
