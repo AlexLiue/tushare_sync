@@ -1,0 +1,15 @@
+[mysql]
+host=47.240.113.220
+user=root
+password=alex
+port=3306
+database=stock
+
+
+[tushare]
+token=74094aefc773c03f505d48c692d8bb0dc22fbdf8b8038e
+
+
+[logging]
+level=INFO
+filename=data_syn.log

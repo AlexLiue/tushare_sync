@@ -25,11 +25,11 @@ from tables.bak_daily import bak_daily
 
 # 全量历史初始化
 def init():
-    stock_basic.init()  # 沪深股票-基础信息-股票列表
-    trade_cal.init()  # 沪深股票-基础信息-交易日历
-    name_change.init()  # 沪深股票-基础信息-股票曾用名
-    hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
-    stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
+    # stock_basic.init()  # 沪深股票-基础信息-股票列表
+    # trade_cal.init()  # 沪深股票-基础信息-交易日历
+    # name_change.init()  # 沪深股票-基础信息-股票曾用名
+    # hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
+    # stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
    # bak_basic.init()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
     daily.init()  # 沪深股票-行情数据-A股日线行情
     weekly.init()  # 沪深股票-行情数据-A股周线行情
