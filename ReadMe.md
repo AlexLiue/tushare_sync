@@ -8,7 +8,7 @@
 
 ### Step1: 修改配置文件信息(本地数据库地址信息、Tushare 账号 token)
 ```shell
-mv application.ini.example application.ini
+mv application.ini application.ini
 # 然后修改 application.ini 中的 mysql 的地址信息 和 Tushare 账号 token
 ```
 
