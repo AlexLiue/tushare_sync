@@ -35,6 +35,7 @@ def init():
             "down_limit",
             "pre_close"
         ],
+        date_column='trade_date',
         start_date='20070101',
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
@@ -55,6 +56,7 @@ def append():
             "down_limit",
             "pre_close"
         ],
+        date_column='trade_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-10)).strftime('%Y%m%d')),
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,

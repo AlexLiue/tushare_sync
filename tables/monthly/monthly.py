@@ -40,6 +40,7 @@ def init():
             "vol",
             "amount"
         ],
+        date_column='trade_date',
         start_date='19901201',
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=31,
@@ -66,6 +67,7 @@ def append():
             "vol",
             "amount"
         ],
+        date_column='trade_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-62)).strftime('%Y%m%d')),
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=31,

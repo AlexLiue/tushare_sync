@@ -36,6 +36,7 @@ def init():
             "north_money",
             "south_money"
         ],
+        date_column='trade_date',
         start_date='20100101',
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=365,
@@ -58,6 +59,7 @@ def append():
             "north_money",
             "south_money"
         ],
+        date_column='trade_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-20)).strftime('%Y%m%d')),
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=365,

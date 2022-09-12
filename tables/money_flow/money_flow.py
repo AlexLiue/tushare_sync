@@ -50,6 +50,7 @@ def init():
             "net_mf_amount",
             "trade_count"
         ],
+        date_column='trade_date',
         start_date='19901219',
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
@@ -86,6 +87,7 @@ def append():
             "net_mf_amount",
             "trade_count"
         ],
+        date_column='trade_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-10)).strftime('%Y%m%d')),
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,

@@ -39,6 +39,7 @@ def init():
             "buy",
             "sell"
         ],
+        date_column='trade_date',
         start_date='20100101',
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=365,
@@ -65,6 +66,7 @@ def append():
             "buy",
             "sell"
         ],
+        date_column='trade_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-30)).strftime('%Y%m%d')),
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=365,
