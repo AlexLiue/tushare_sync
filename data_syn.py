@@ -24,6 +24,8 @@ from tables.forecast import forecast
 from tables.express import express
 from tables.fina_indicator import fina_indicator
 from tables.fina_mainbz import fina_mainbz
+from tables.disclosure_date import disclosure_date
+from tables.margin_detail import margin_detail
 
 
 # 全量历史初始化
@@ -47,6 +49,10 @@ def init():
     express.init()  # 沪深股票-财务数据-业绩快报
     fina_indicator.init()  # 沪深股票-财务数据-财务指标数据
     fina_mainbz.init()  # 沪深股票-财务数据-主营业务构成
+    disclosure_date.init()  # 沪深股票-财务数据-财报披露计划
+    margin_detail.init()  # 沪深股票-市场参考数据-融资融券交易明细
+
+
 
 
 # 增量数据追加同步
@@ -70,7 +76,8 @@ def append():
     express.append()  # 沪深股票-财务数据-业绩快报
     fina_indicator.append()  # 沪深股票-财务数据-财务指标数据
     fina_mainbz.append()  # 沪深股票-财务数据-主营业务构成
-
+    disclosure_date.append()  # 沪深股票-财务数据-财报披露计划
+    margin_detail.append()  # 沪深股票-市场参考数据-融资融券交易明细
 
 def init_spc():
     bak_basic.init()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
