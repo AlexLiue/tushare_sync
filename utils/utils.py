@@ -139,7 +139,6 @@ def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, lim
     :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
     :param limit: 每次查询的记录条数
     :param interval: 每次查询的时间间隔
-    :param clean_sql: 数据存储前数据清理SQL
     :return: None
     """
     # 创建 API / Connection / Logger 对象
