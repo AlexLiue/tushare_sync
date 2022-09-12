@@ -15,49 +15,19 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=170
 
 
 import os
-import time
 import datetime
-from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger
-
+from utils.utils import exec_mysql_script, exec_sync
 
 # 全量初始化表数据
 def init():
+    # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_mysql_script(dir_path)
-    start_date = '19700101'
-    now = datetime.datetime.now()
-    end_date = now.strftime('%Y%m%d')
-    exec_syn(trade_date='', start_date=start_date, end_date=end_date, limit=5000, interval=0)
 
-
-# 增量追加表数据
-def append():
-    now = datetime.datetime.now()
-    date = now.strftime('%Y%m%d')
-    exec_syn(trade_date=date, start_date=date, end_date=date, limit=5000, interval=0)
-
-
-# trade_date: 交易日期, 空值时匹配所有日期 (增量单日增加参数)
-# start_date: 数据开始日期（全量历史初始化参数）
-# end_date: 数据结束日期（全量历史初始化参数）
-# interval: 每次拉取的时间间隔
-def exec_syn(trade_date, start_date, end_date, limit, interval):
-    ts_api = get_tushare_api()
-    connection = get_mock_connection()
-    logger = get_logger('money_flow', 'data_syn.log')
-
-    offset = 0
-    while True:
-        logger.info("Query monthly from tushare with api[moneyflow] trade_date[%s] start_date[%s] end_date[%s] "
-                    "from offset[%d] limit[%d]" % (trade_date, start_date, end_date, offset, limit))
-        data = ts_api.moneyflow(**{
-            "ts_code": "",
-            "trade_date": trade_date,
-            "start_date": start_date,
-            "end_date": end_date,
-            "limit": limit,
-            "offset": offset
-        }, fields=[
+    exec_sync(
+        table_name='money_flow',
+        api_name='moneyflow',
+        fields=[
             "ts_code",
             "trade_date",
             "buy_sm_vol",
@@ -79,16 +49,49 @@ def exec_syn(trade_date, start_date, end_date, limit, interval):
             "net_mf_vol",
             "net_mf_amount",
             "trade_count"
-        ])
-        logger.info('Write [%d] records into table [money_flow] with [%s]' % (data.last_valid_index()+1, connection.engine))
-        data.to_sql('money_flow', connection, index=False, if_exists='append', chunksize=5000)
+        ],
+        start_date='19901219',
+        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        date_step=1,
+        limit=5000,
+        interval=0.3
+    )
 
-        size = data.last_valid_index()+1
-        offset = offset + size
-        if size < limit:
-            break
-        else:
-            time.sleep(interval)
+
+# 增量追加表数据
+def append():
+    exec_sync(
+        table_name='money_flow',
+        api_name='moneyflow',
+        fields=[
+            "ts_code",
+            "trade_date",
+            "buy_sm_vol",
+            "buy_sm_amount",
+            "sell_sm_vol",
+            "sell_sm_amount",
+            "buy_md_vol",
+            "buy_md_amount",
+            "sell_md_vol",
+            "sell_md_amount",
+            "buy_lg_vol",
+            "buy_lg_amount",
+            "sell_lg_vol",
+            "sell_lg_amount",
+            "buy_elg_vol",
+            "buy_elg_amount",
+            "sell_elg_vol",
+            "sell_elg_amount",
+            "net_mf_vol",
+            "net_mf_amount",
+            "trade_count"
+        ],
+        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-10)).strftime('%Y%m%d')),
+        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        date_step=1,
+        limit=5000,
+        interval=0.3
+    )
 
 
 if __name__ == '__main__':

@@ -26,6 +26,140 @@ python data_syn.py --mode append
 ```
 说明1: 部分表数据量相对较小或者不具备增量同步逻辑，因此选择每日全量同步
 
+## 主要接口函数
+```python
+import datetime
+
+import time
+from utils.utils import get_tushare_api,get_mock_connection,get_logger,exec_mysql_sql,min_date
+def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, limit, interval):
+    """
+    执行数据同步并存储
+    :param table_name: 表名
+    :param api_name: API 名
+    :param fields: 字段列表
+    :param start_date: 开始时间
+    :param end_date: 结束时间
+    :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
+    :param limit: 每次查询的记录条数
+    :param interval: 每次查询的时间间隔
+    :param clean_sql: 数据存储前数据清理SQL
+    :return: None
+    """
+    # 创建 API / Connection / Logger 对象
+    ts_api = get_tushare_api()
+    connection = get_mock_connection()
+    logger = get_logger(table_name, 'data_syn.log')
+
+    # 清理历史数据
+    clean_sql="DELETE FROM %s WHERE trade_date>='%s' AND trade_date<='%s'" % (table_name, start_date, end_date)
+    logger.info('Execute Clean SQL [%s]' % clean_sql)
+    exec_mysql_sql(clean_sql)
+
+    # 数据同步时间开始时间和结束时间, 包含前后边界
+    start = datetime.datetime.strptime(start_date, '%Y%m%d')
+    end = datetime.datetime.strptime(end_date, '%Y%m%d')
+
+    step_start = start  # 微批开始时间
+    step_end = min_date(start + datetime.timedelta(date_step - 1), end)  # 微批结束时间
+
+    while step_start <= end:
+        start_date = str(step_start.strftime('%Y%m%d'))
+        end_date = str(step_end.strftime('%Y%m%d'))
+        offset = 0
+        while True:
+            logger.info("Query [%s] from tushare with api[%s] start_date[%s] end_date[%s]"
+                        " from offset[%d] limit[%d]" % (table_name, api_name, start_date, end_date, offset, limit))
+
+            data = ts_api.query(api_name,
+                                **{
+                                    "start_date": start_date,
+                                    "end_date": end_date,
+                                    "offset": offset,
+                                    "limit": limit
+                                },
+                                fields=fields)
+
+            time.sleep(interval)
+            if data.last_valid_index() is not None:
+                size = data.last_valid_index() + 1
+                logger.info('Write [%d] records into table [%s] with [%s]' % (size, table_name, connection.engine))
+                data.to_sql(table_name, connection, index=False, if_exists='append', chunksize=limit)
+                offset = offset + size
+                if size < limit:
+                    break
+            else:
+                break
+        # 更新下一次微批时间段
+        step_start = step_start + datetime.timedelta(date_step)
+        step_end = min_date(step_end + datetime.timedelta(date_step), end)
+
+```
+## 接口使用示例
+以 沪深股票-行情数据-A股日线行情（daily）为例   
+### 全量历史数据初始化
+```python
+from utils.utils import exec_mysql_script, exec_sync
+import os
+import datetime
+def init():
+    # 创建表
+    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+    exec_mysql_script(dir_path)
+
+    exec_sync(
+        table_name='daily',
+        api_name='daily',
+        fields=[
+            "ts_code",
+            "trade_date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "pre_close",
+            "change",
+            "pct_chg",
+            "vol",
+            "amount"
+        ],
+        start_date='19901219',
+        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        date_step=1,
+        limit=5000,
+        interval=0.3
+    )
+```
+### 增量数据每日更新
+其中： start_date 可以前回溯一段时间, 防止原始数据中断或者延迟导致的数据丢失
+```python
+from utils.utils import exec_sync
+import datetime
+def append():
+    exec_sync(
+        table_name='daily',
+        api_name='daily',
+        fields=[
+            "ts_code",
+            "trade_date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "pre_close",
+            "change",
+            "pct_chg",
+            "vol",
+            "amount"
+        ],
+        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-7)).strftime('%Y%m%d')),
+        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        date_step=1,
+        limit=5000,
+        interval=0.3
+    )
+```
+
 ## 执行日志说明
 相关日志打印存储在 项目根目录/logs/data_syn.log 文件中, 日志示例
 ```shell
@@ -63,27 +197,29 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 ```
 
 ## 已完成的同步表
+### 常规处理的表
+| MySQL表名         | Tushare  接口名   | 数据说明                              |  
+|:----------------|:---------------|:----------------------------------|  
+| stock_basic     | stock_basic    | 沪深股票-基础信息-股票列表 (每日全量覆盖)           |  
+| trade_cal       | trade_cal      | 沪深股票-基础信息-交易日历 (每日全量覆盖)           |  
+| name_change     | namechange     | 沪深股票-基础信息-股票曾用名 (每日全量覆盖)          |  
+| hs_const        | hs_const       | 沪深股票-基础信息-沪深股通成份股 (每日全量覆盖)        |
+| stk_rewards     | stk_rewards    | 沪深股票-基础信息-管理层薪酬和持股 (每日增量覆盖近10日数据) |
+| daily           | daily          | 沪深股票-行情数据-A股日线行情                  |  
+| weekly          | weekly         | 沪深股票-行情数据-A股周线行情                  |  
+| monthly         | monthly        | 沪深股票-行情数据-A股月线行情                  |  
+| money_flow      | moneyflow      | 沪深股票-行情数据-个股资金流向                  |  
+| stk_limit       | stk_limit      | 沪深股票-行情数据-每日涨跌停价格                 |  
+| money_flow_hsgt | moneyflow_hsgt | 沪深股票-行情数据-沪深港通资金流向                |  
+| hsgt_top10      | hsgt_top10     | 沪深股票-行情数据-沪深股通十大成交股               |  
+| ggt_top10       | ggt_top10      | 沪深股票-行情数据-港股通十大成交股                |
+| ggt_daily       | ggt_daily      | 沪深股票-行情数据-港股通每日成交统计               |
+| bak_daily       | bak_daily      | 沪深股票-行情数据-备用行情                    |  
 
-| MySQL表名         | Tushare  接口名   | 数据说明                |  
-|:----------------|:---------------|:--------------------|  
-| stock_basic     | stock_basic    | 沪深股票-基础信息-股票列表      |  
-| trade_cal       | trade_cal      | 沪深股票-基础信息-交易日历      |  
-| name_change     | namechange     | 沪深股票-基础信息-股票曾用名     |  
-| hs_const        | hs_const       | 沪深股票-基础信息-沪深股通成份股   |
-| stk_rewards     | stk_rewards    | 沪深股票-基础信息-管理层薪酬和持股  |  
-| bak_basic       | bak_basic      | 沪深股票-基础信息-备用列表      |  
-| daily           | daily          | 沪深股票-行情数据-A股日线行情    |  
-| weekly          | weekly         | 沪深股票-行情数据-A股周线行情    |  
-| monthly         | monthly        | 沪深股票-行情数据-A股月线行情    |  
-| money_flow      | moneyflow      | 沪深股票-行情数据-个股资金流向    |  
-| stk_limit       | stk_limit      | 沪深股票-行情数据-每日涨跌停价格   |  
-| money_flow_hsgt | moneyflow_hsgt | 沪深股票-行情数据-沪深港通资金流向  |  
-| hsgt_top10      | hsgt_top10     | 沪深股票-行情数据-沪深股通十大成交股 |  
-| ggt_top10       | ggt_top10      | 沪深股票-行情数据-港股通十大成交股 |
-| ggt_daily       | ggt_daily      | 沪深股票-行情数据-港股通每日成交统计 |
-| bak_daily       | bak_daily      | 沪深股票-行情数据-备用行情 |  
-
-
+## 特殊处理
+| MySQL表名         | Tushare  接口名   | 数据说明                              |  
+|:----------------|:---------------|:----------------------------------|
+| bak_basic       | bak_basic      | 沪深股票-基础信息-备用列表（受限每分钟两次API，单独特殊处理） |  
 
 
 ## 其他

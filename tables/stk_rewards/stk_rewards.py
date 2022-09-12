@@ -13,67 +13,110 @@ tushare 接口说明： https://tushare.pro/document/2?doc_id=194
 """
 
 import os
-from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger
+import time
+import datetime
+from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger, min_date, exec_mysql_sql, \
+    exec_sync
 
+ts_code_limit = 1000 # 每次查询多少家股票代码
+limit = 5000 # 每次读取记录条数
+interval = 0.3 # 读取的时间间隔, Tushare 限制每分钟 200次 API 调用
+begin_date = '19940416' # Tushare 里数据最早开始时间
+init_date_step = 30 # 微批时间段长度
 
-# 全量初始化表数据
-# 首先从 stock_basic 接口中查询 ts_code , 每次查询 1000 条
-# 然后从 stk_rewards 接口中查询管理层薪酬和持股, 每次查询 4000 条
-def init():
-    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_mysql_script(dir_path)
+# 首先从 stock_basic 接口中查询 ts_code , 每次查询 ts_code_limit 条
+# 然后从 stk_rewards 接口中查询管理层薪酬和持股, 每次查询 limit 条
+def exec_syn(start_date, end_date):
+    # Extern Global Var
+    global ts_code_limit
+    global limit
+    global interval
 
     ts_api = get_tushare_api()
     connection = get_mock_connection()
     logger = get_logger('stk_rewards', 'data_syn.log')
+    logger.info("Sync ts_code start_date[%s] end_date[%s]" % (start_date, end_date))
 
-    limit1 = 1000  # 每次读取 1000 行
-    offset1 = 0  # 读取偏移量
+    ts_code_offset = 0  # 读取偏移量
     while True:
-        logger.info("Query ts_code from tushare with api[stock_basic] from offset1[%d] limit1[%d]" % (offset1, limit1))
+        logger.info("Query ts_code from tushare with api[stock_basic] from ts_code_offset[%d] ts_code_limit[%d]"
+                    % (ts_code_offset, ts_code_offset))
         df_ts_code = ts_api.stock_basic(**{
-            "limit": limit1,
-            "offset": offset1
+            "limit": ts_code_limit,
+            "offset": ts_code_offset
         }, fields=[
             "ts_code"
         ])
-
-        ts_code = df_ts_code['ts_code'].str.cat(sep=',')
-        limit2 = 4000
-        offset2 = 0
-        while True:
-            logger.info("Query stk_rewards from tushare with api[stk_rewards] from offset1[%d] limit1[%d] offset2[%d] "
-                        "limit2[%d]" % (offset1, limit1, offset2, limit2))
-            data = ts_api.stk_rewards(**{
-                "ts_code": ts_code,
-                "limit": limit2,
-                "offset": offset2
-            }, fields=[
-                "ts_code",
-                "ann_date",
-                "end_date",
-                "name",
-                "title",
-                "reward",
-                "hold_vol"
-            ])
-            logger.info('Write [%d] records into table [stk_rewards] with [%s]' %
-                         (data.last_valid_index()+1, connection.engine))
-            data.to_sql('stk_rewards', connection, index=False, if_exists='append', chunksize=5000)
-            size2 = data.last_valid_index()+1
-            offset2 = offset2 + size2
-            if size2 < limit2:
+        time.sleep(interval)
+        if df_ts_code.last_valid_index() is not None:
+            ts_code = df_ts_code['ts_code'].str.cat(sep=',')
+            start = datetime.datetime.strptime(start_date, '%Y%m%d')
+            end = datetime.datetime.strptime(end_date, '%Y%m%d')
+            syn_date = start  # 微批开始时间
+            while syn_date < end:
+                offset = 0
+                syn_end_date = str(syn_date.strftime('%Y%m%d'))
+                while True:
+                    logger.info(
+                        "Query stk_rewards from tushare with api[stk_rewards] syn_date[%s] from ts_code_offset[%d] ts_code_limit[%d]"
+                        " offset[%d] limit[%d]" % (syn_end_date, ts_code_offset, ts_code_limit, offset, limit))
+                    data = ts_api.stk_rewards(**{
+                        "end_date": syn_end_date,
+                        "ts_code": ts_code,
+                        "limit": limit,
+                        "offset": offset
+                    }, fields=[
+                        "ts_code",
+                        "ann_date",
+                        "end_date",
+                        "name",
+                        "title",
+                        "reward",
+                        "hold_vol"
+                    ])
+                    time.sleep(interval)
+                    if data.last_valid_index() is not None:
+                        size = data.last_valid_index() + 1
+                        logger.info('Write [%d] records into table [stk_rewards] with [%s]' % (size, connection.engine))
+                        data.to_sql('stk_rewards', connection, index=False, if_exists='append', chunksize=limit)
+                        offset = offset + size
+                        if size < limit:
+                            break
+                    else:
+                        break
+                syn_date = syn_date + datetime.timedelta(days=1)
+            ts_code_size = df_ts_code.last_valid_index() + 1
+            ts_code_offset = ts_code_offset + ts_code_size
+            if ts_code_size < ts_code_limit:
                 break
-        size = df_ts_code.last_valid_index()+1
-        offset1 = offset1 + size
-        if size < limit1:
+        else:
             break
 
+def init():
+    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+    exec_mysql_script(dir_path)
 
-# 增量追加表数据, 股票列表不具备增量条件, 全量覆盖
+    global begin_date
+    now = datetime.datetime.now()
+    end_date = str(now.strftime('%Y%m%d'))
+
+    exec_syn(begin_date, end_date)
+
+
+
+# 增量追加表数据, 股票列表不具备增量条件, 先选择无条件覆盖（20天的数据)
 def append():
-    init()
+    now = datetime.datetime.now()
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
+    start_date = str((now + datetime.timedelta(days=-10)).strftime('%Y%m%d'))
 
+    logger = get_logger('stk_rewards', 'data_syn.log')
+    clen_sql = "delete from stk_rewards where end_date>='%s' and end_date<='%s'" % (end_date, start_date)
+    logger.info('Execute Clean SQL [%s]' % clen_sql)
+
+    exec_mysql_sql(clen_sql)
+
+    exec_syn(start_date, end_date)
 
 if __name__ == '__main__':
-    init()
+    append()

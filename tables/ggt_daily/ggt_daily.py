@@ -14,65 +14,54 @@
 tushare 接口说明：https://tushare.pro/document/2?doc_id=196
 """
 
-import os
-import time
-import datetime
-from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger
 
+
+import os
+import datetime
+from utils.utils import exec_mysql_script, exec_sync
 
 # 全量初始化表数据
 def init():
+    # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_mysql_script(dir_path)
-    start_date = '19700101'
-    now = datetime.datetime.now()
-    end_date = now.strftime('%Y%m%d')
-    exec_syn(trade_date='', start_date=start_date, end_date=end_date, limit=1000, interval=30)
 
-
-# 增量追加表数据
-def append():
-    now = datetime.datetime.now()
-    date = now.strftime('%Y%m%d')
-    exec_syn(trade_date=date, start_date=date, end_date=date, limit=1000, interval=30)
-
-
-# trade_date: 交易日期, 空值时匹配所有日期 (增量单日增加参数)
-# start_date: 数据开始日期（全量历史初始化参数）
-# end_date: 数据结束日期（全量历史初始化参数）
-# limit: 每次拉取的记录数
-# interval: 每次拉取的时间间隔
-def exec_syn(trade_date, start_date, end_date, limit, interval):
-    ts_api = get_tushare_api()
-    connection = get_mock_connection()
-    logger = get_logger('ggt_daily', 'data_syn.log')
-
-    offset = 0
-    while True:
-        logger.info("Query monthly from tushare with api[ggt_daily] trade_date[%s] start_date[%s] end_date[%s] "
-                    "from offset[%d] limit[%d]" % (trade_date, start_date, end_date, offset, limit))
-        data = ts_api.ggt_daily(**{
-            "trade_date": trade_date,
-            "start_date": start_date,
-            "end_date": end_date,
-            "limit": limit,
-            "offset": offset
-        }, fields=[
+    exec_sync(
+        table_name='ggt_daily',
+        api_name='ggt_daily',
+        fields=[
             "trade_date",
             "buy_amount",
             "buy_volume",
             "sell_amount",
             "sell_volume"
-        ])
-        logger.info('Write [%d] records into table [ggt_daily] with [%s]' % (data.last_valid_index()+1, connection.engine))
-        data.to_sql('ggt_daily', connection, index=False, if_exists='append', chunksize=5000)
+        ],
+        start_date='20100101',
+        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        date_step=365,
+        limit=1000,
+        interval=30
+    )
 
-        size = data.last_valid_index()+1
-        offset = offset + size
-        if size < limit:
-            break
-        else:
-            time.sleep(interval)
+
+# 增量追加表数据
+def append():
+    exec_sync(
+        table_name='ggt_daily',
+        api_name='ggt_daily',
+        fields=[
+            "trade_date",
+            "buy_amount",
+            "buy_volume",
+            "sell_amount",
+            "sell_volume"
+        ],
+        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-30)).strftime('%Y%m%d')),
+        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        date_step=365,
+        limit=1000,
+        interval=30
+    )
 
 
 if __name__ == '__main__':

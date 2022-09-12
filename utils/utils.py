@@ -6,8 +6,10 @@
 """
 
 import configparser
+import datetime
 import logging
 import os
+import time
 
 import pymysql
 import tushare as ts
@@ -60,6 +62,20 @@ def get_logger(log_name, file_name):
     return logger
 
 
+
+def exec_mysql_sql(sql):
+    cfg = get_cfg()
+    db = pymysql.connect(host=cfg['mysql']['host'],
+                         port=int(cfg['mysql']['port']),
+                         user=cfg['mysql']['user'],
+                         passwd=cfg['mysql']['password'],
+                         db=cfg['mysql']['database'],
+                         charset='utf8')
+    cursor = db.cursor()
+    cursor.execute(sql + ';')
+    cursor.close()
+    db.close()
+
 # 执行 SQL 脚本
 def exec_mysql_script(script_dir):
     cfg = get_cfg()
@@ -98,8 +114,81 @@ def exec_mysql_script(script_dir):
                 pass
     logger.info('Execute result: Total [%s], Succeed [%s] , Failed [%s] ' % (count, suc_cnt, flt_cnt))
     cursor.close()
+    db.close()
     if flt_cnt > 0:
         raise Exception('Execute SQL script [%s] failed. ' % script_dir)
+
+# 获取两个日期的最小值
+def min_date(date1, date2):
+    if date1 <= date2:
+        return date1
+    else:
+        return date2
+
+
+# fields 字段列表
+#
+def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, limit, interval):
+    """
+    执行数据同步并存储
+    :param table_name: 表名
+    :param api_name: API 名
+    :param fields: 字段列表
+    :param start_date: 开始时间
+    :param end_date: 结束时间
+    :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
+    :param limit: 每次查询的记录条数
+    :param interval: 每次查询的时间间隔
+    :param clean_sql: 数据存储前数据清理SQL
+    :return: None
+    """
+    # 创建 API / Connection / Logger 对象
+    ts_api = get_tushare_api()
+    connection = get_mock_connection()
+    logger = get_logger(table_name, 'data_syn.log')
+
+    # 清理历史数据
+    clean_sql="DELETE FROM %s WHERE trade_date>='%s' AND trade_date<='%s'" % (table_name, start_date, end_date)
+    logger.info('Execute Clean SQL [%s]' % clean_sql)
+    exec_mysql_sql(clean_sql)
+
+    # 数据同步时间开始时间和结束时间, 包含前后边界
+    start = datetime.datetime.strptime(start_date, '%Y%m%d')
+    end = datetime.datetime.strptime(end_date, '%Y%m%d')
+
+    step_start = start  # 微批开始时间
+    step_end = min_date(start + datetime.timedelta(date_step - 1), end)  # 微批结束时间
+
+    while step_start <= end:
+        start_date = str(step_start.strftime('%Y%m%d'))
+        end_date = str(step_end.strftime('%Y%m%d'))
+        offset = 0
+        while True:
+            logger.info("Query [%s] from tushare with api[%s] start_date[%s] end_date[%s]"
+                        " from offset[%d] limit[%d]" % (table_name, api_name, start_date, end_date, offset, limit))
+
+            data = ts_api.query(api_name,
+                                **{
+                                    "start_date": start_date,
+                                    "end_date": end_date,
+                                    "offset": offset,
+                                    "limit": limit
+                                },
+                                fields=fields)
+
+            time.sleep(interval)
+            if data.last_valid_index() is not None:
+                size = data.last_valid_index() + 1
+                logger.info('Write [%d] records into table [%s] with [%s]' % (size, table_name, connection.engine))
+                data.to_sql(table_name, connection, index=False, if_exists='append', chunksize=limit)
+                offset = offset + size
+                if size < limit:
+                    break
+            else:
+                break
+        # 更新下一次微批时间段
+        step_start = step_start + datetime.timedelta(date_step)
+        step_end = min_date(step_end + datetime.timedelta(date_step), end)
 
 
 if __name__ == '__main__':

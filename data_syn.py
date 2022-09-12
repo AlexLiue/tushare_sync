@@ -30,7 +30,6 @@ def init():
     # name_change.init()  # 沪深股票-基础信息-股票曾用名
     # hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
     # stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
-   # bak_basic.init()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
     daily.init()  # 沪深股票-行情数据-A股日线行情
     weekly.init()  # 沪深股票-行情数据-A股周线行情
     monthly.init()  # 沪深股票-行情数据-A股月线行情
@@ -50,7 +49,6 @@ def append():
     name_change.append()  # 沪深股票-基础信息-股票曾用名
     hs_const.append()  # 沪深股票-基础信息-沪深股通成份股
     stk_rewards.append()  # 沪深股票-基础信息-管理层薪酬和持股
-    bak_basic.append()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次）
     daily.append()  # 沪深股票-行情数据-A股日线行情
     weekly.append()  # 沪深股票-行情数据-A股周线行情
     monthly.append()  # 沪深股票-行情数据-A股月线行情
@@ -63,19 +61,31 @@ def append():
     bak_daily.append()  # 沪深股票-行情数据-备用行情
 
 
+def init_spc():
+    bak_basic.init()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
+
+
+def append_spc():
+    bak_basic.append()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
+
 
 def use_age():
-    print('Useage: python data_syn.py [--mode  init|append ]')
+    print('Useage: python data_syn.py --mode [init | append | init_spc | append_spc]')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='sync mode args')
-    parser.add_argument("--mode", type=str, default='', help='同步模式: init(初始化模式), append(增量追加模式)')
+    parser.add_argument("--mode", type=str, default='', help='同步模式: init(初始化模式), append(增量追加模式),'
+                                                             ' init_spc(初始化特殊处理模式), append_spc(特殊处理增量追加模式)')
     args = parser.parse_args()
     mode = args.mode
     if mode == 'init':
         init()
     elif mode == 'append':
         append()
+    elif mode == init_spc:
+        init_spc()
+    elif mode == 'append_spc':
+        append_spc()
     else:
         use_age()
