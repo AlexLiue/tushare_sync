@@ -126,14 +126,26 @@ def min_date(date1, date2):
         return date2
 
 
+
+
+def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, limit, interval):
+    """
+    date_column 默认值取 : trade_date
+    """
+
+    date_column = 'trade_date'
+    exec_sync(table_name, api_name, fields, date_column, start_date, end_date, date_step, limit, interval)
+
+
 # fields 字段列表
 #
-def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, limit, interval):
+def exec_sync(table_name, api_name, fields, date_column, start_date, end_date, date_step, limit, interval):
     """
     执行数据同步并存储
     :param table_name: 表名
     :param api_name: API 名
     :param fields: 字段列表
+    :param date_column: 增量时间字段列
     :param start_date: 开始时间
     :param end_date: 结束时间
     :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
@@ -147,7 +159,8 @@ def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, lim
     logger = get_logger(table_name, 'data_syn.log')
 
     # 清理历史数据
-    clean_sql="DELETE FROM %s WHERE trade_date>='%s' AND trade_date<='%s'" % (table_name, start_date, end_date)
+    clean_sql="DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
+              (table_name, date_column, start_date, date_column, end_date)
     logger.info('Execute Clean SQL [%s]' % clean_sql)
     exec_mysql_sql(clean_sql)
 

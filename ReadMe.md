@@ -215,6 +215,8 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | ggt_top10       | ggt_top10      | 沪深股票-行情数据-港股通十大成交股                |
 | ggt_daily       | ggt_daily      | 沪深股票-行情数据-港股通每日成交统计               |
 | bak_daily       | bak_daily      | 沪深股票-行情数据-备用行情                    |  
+| forecast        | forecast       | 沪深股票-财务数据-业绩预告                    |  
+| express         | express        | 沪深股票-财务数据-业绩快报                   |  
 
 ## 特殊处理
 | MySQL表名         | Tushare  接口名   | 数据说明                              |  

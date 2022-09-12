@@ -20,16 +20,16 @@ from tables.hsgt_top10 import hsgt_top10
 from tables.ggt_top10 import ggt_top10
 from tables.ggt_daily import ggt_daily
 from tables.bak_daily import bak_daily
-
+from tables.forecast import forecast
 
 
 # 全量历史初始化
 def init():
-    # stock_basic.init()  # 沪深股票-基础信息-股票列表
-    # trade_cal.init()  # 沪深股票-基础信息-交易日历
-    # name_change.init()  # 沪深股票-基础信息-股票曾用名
-    # hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
-    # stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
+    stock_basic.init()  # 沪深股票-基础信息-股票列表
+    trade_cal.init()  # 沪深股票-基础信息-交易日历
+    name_change.init()  # 沪深股票-基础信息-股票曾用名
+    hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
+    stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
     daily.init()  # 沪深股票-行情数据-A股日线行情
     weekly.init()  # 沪深股票-行情数据-A股周线行情
     monthly.init()  # 沪深股票-行情数据-A股月线行情
@@ -39,7 +39,8 @@ def init():
     hsgt_top10.init()  # 沪深股票-行情数据-沪深股通十大成交股
     ggt_top10.init()  # 沪深股票-行情数据-港股通十大成交股
     ggt_daily.init()  # 沪深股票-行情数据-港股通每日成交统计
-    bak_daily.init()  #  沪深股票-行情数据-备用行情
+    bak_daily.init()  # 沪深股票-行情数据-备用行情
+    forecast.init()  # 沪深股票-财务数据-业绩预告
 
 
 # 增量数据追加同步
@@ -59,6 +60,7 @@ def append():
     ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
     ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
     bak_daily.append()  # 沪深股票-行情数据-备用行情
+    forecast.append()  # 沪深股票-财务数据-业绩预告
 
 
 def init_spc():
