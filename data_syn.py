@@ -21,6 +21,9 @@ from tables.ggt_top10 import ggt_top10
 from tables.ggt_daily import ggt_daily
 from tables.bak_daily import bak_daily
 from tables.forecast import forecast
+from tables.express import express
+from tables.fina_indicator import fina_indicator
+from tables.fina_mainbz import fina_mainbz
 
 
 # 全量历史初始化
@@ -41,6 +44,9 @@ def init():
     ggt_daily.init()  # 沪深股票-行情数据-港股通每日成交统计
     bak_daily.init()  # 沪深股票-行情数据-备用行情
     forecast.init()  # 沪深股票-财务数据-业绩预告
+    express.init()  # 沪深股票-财务数据-业绩快报
+    fina_indicator.init()  # 沪深股票-财务数据-财务指标数据
+    fina_mainbz.init()  # 沪深股票-财务数据-主营业务构成
 
 
 # 增量数据追加同步
@@ -54,13 +60,16 @@ def append():
     weekly.append()  # 沪深股票-行情数据-A股周线行情
     monthly.append()  # 沪深股票-行情数据-A股月线行情
     money_flow.append()  # 沪深股票-行情数据-个股资金流向
-    stk_limit.append()  # 沪深股票-行情数据-每日涨跌停价格
+    stk_limit.append()   # 沪深股票-行情数据-每日涨跌停价格
     money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
     hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
     ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
     ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
     bak_daily.append()  # 沪深股票-行情数据-备用行情
     forecast.append()  # 沪深股票-财务数据-业绩预告
+    express.append()  # 沪深股票-财务数据-业绩快报
+    fina_indicator.append()  # 沪深股票-财务数据-财务指标数据
+    fina_mainbz.append()  # 沪深股票-财务数据-主营业务构成
 
 
 def init_spc():

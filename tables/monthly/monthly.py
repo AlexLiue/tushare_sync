@@ -16,7 +16,7 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=144
 
 import os
 import datetime
-from utils.utils import exec_mysql_script, exec_sync
+from utils.utils import exec_mysql_script, exec_sync_without_ts_code
 
 # 全量初始化表数据
 def init():
@@ -24,7 +24,7 @@ def init():
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_mysql_script(dir_path)
 
-    exec_sync(
+    exec_sync_without_ts_code(
         table_name='monthly',
         api_name='monthly',
         fields=[
@@ -50,7 +50,7 @@ def init():
 
 # 增量追加表数据
 def append():
-    exec_sync(
+    exec_sync_without_ts_code(
         table_name='monthly',
         api_name='monthly',
         fields=[

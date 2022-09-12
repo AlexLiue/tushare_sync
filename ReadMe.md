@@ -98,16 +98,19 @@ def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, lim
 ## 接口使用示例
 以 沪深股票-行情数据-A股日线行情（daily）为例   
 ### 全量历史数据初始化
+
 ```python
-from utils.utils import exec_mysql_script, exec_sync
+from utils.utils import exec_mysql_script, exec_sync_without_ts_code
 import os
 import datetime
+
+
 def init():
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_mysql_script(dir_path)
 
-    exec_sync(
+    exec_sync_without_ts_code(
         table_name='daily',
         api_name='daily',
         fields=[
@@ -124,7 +127,7 @@ def init():
             "amount"
         ],
         start_date='19901219',
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
         limit=5000,
         interval=0.3
@@ -132,11 +135,14 @@ def init():
 ```
 ### 增量数据每日更新
 其中： start_date 可以前回溯一段时间, 防止原始数据中断或者延迟导致的数据丢失
+
 ```python
-from utils.utils import exec_sync
+from utils.utils import exec_sync_without_ts_code
 import datetime
+
+
 def append():
-    exec_sync(
+    exec_sync_without_ts_code(
         table_name='daily',
         api_name='daily',
         fields=[
@@ -153,7 +159,7 @@ def append():
             "amount"
         ],
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-7)).strftime('%Y%m%d')),
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
         limit=5000,
         interval=0.3
@@ -198,25 +204,31 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 
 ## 已完成的同步表
 ### 常规处理的表
-| MySQL表名         | Tushare  接口名   | 数据说明                              |  
-|:----------------|:---------------|:----------------------------------|  
-| stock_basic     | stock_basic    | 沪深股票-基础信息-股票列表 (每日全量覆盖)           |  
-| trade_cal       | trade_cal      | 沪深股票-基础信息-交易日历 (每日全量覆盖)           |  
-| name_change     | namechange     | 沪深股票-基础信息-股票曾用名 (每日全量覆盖)          |  
-| hs_const        | hs_const       | 沪深股票-基础信息-沪深股通成份股 (每日全量覆盖)        |
-| stk_rewards     | stk_rewards    | 沪深股票-基础信息-管理层薪酬和持股 (每日增量覆盖近10日数据) |
-| daily           | daily          | 沪深股票-行情数据-A股日线行情                  |  
-| weekly          | weekly         | 沪深股票-行情数据-A股周线行情                  |  
-| monthly         | monthly        | 沪深股票-行情数据-A股月线行情                  |  
-| money_flow      | moneyflow      | 沪深股票-行情数据-个股资金流向                  |  
-| stk_limit       | stk_limit      | 沪深股票-行情数据-每日涨跌停价格                 |  
-| money_flow_hsgt | moneyflow_hsgt | 沪深股票-行情数据-沪深港通资金流向                |  
-| hsgt_top10      | hsgt_top10     | 沪深股票-行情数据-沪深股通十大成交股               |  
-| ggt_top10       | ggt_top10      | 沪深股票-行情数据-港股通十大成交股                |
-| ggt_daily       | ggt_daily      | 沪深股票-行情数据-港股通每日成交统计               |
-| bak_daily       | bak_daily      | 沪深股票-行情数据-备用行情                    |  
-| forecast        | forecast       | 沪深股票-财务数据-业绩预告                    |  
-| express         | express        | 沪深股票-财务数据-业绩快报                   |  
+| MySQL表名             | Tushare  接口名      | 数据说明                              |  
+|:--------------------|:------------------|:----------------------------------|  
+| stock_basic         | stock_basic       | 沪深股票-基础信息-股票列表 (每日全量覆盖)           |  
+| trade_cal           | trade_cal         | 沪深股票-基础信息-交易日历 (每日全量覆盖)           |  
+| name_change         | namechange        | 沪深股票-基础信息-股票曾用名 (每日全量覆盖)          |  
+| hs_const            | hs_const          | 沪深股票-基础信息-沪深股通成份股 (每日全量覆盖)        |
+| stk_rewards         | stk_rewards       | 沪深股票-基础信息-管理层薪酬和持股 (每日增量覆盖近10日数据) |
+| daily               | daily             | 沪深股票-行情数据-A股日线行情                  |  
+| weekly              | weekly            | 沪深股票-行情数据-A股周线行情                  |  
+| monthly             | monthly           | 沪深股票-行情数据-A股月线行情                  |  
+| money_flow          | moneyflow         | 沪深股票-行情数据-个股资金流向                  |  
+| stk_limit           | stk_limit         | 沪深股票-行情数据-每日涨跌停价格                 |  
+| money_flow_hsgt     | moneyflow_hsgt    | 沪深股票-行情数据-沪深港通资金流向                |  
+| hsgt_top10          | hsgt_top10        | 沪深股票-行情数据-沪深股通十大成交股               |  
+| ggt_top10           | ggt_top10         | 沪深股票-行情数据-港股通十大成交股                |
+| ggt_daily           | ggt_daily         | 沪深股票-行情数据-港股通每日成交统计               |
+| bak_daily           | bak_daily         | 沪深股票-行情数据-备用行情                    |  
+| forecast            | forecast          | 沪深股票-财务数据-业绩预告                    |  
+| express             | express           | 沪深股票-财务数据-业绩快报                    |  
+| fina_indicator      | fina_indicator    | 沪深股票-财务数据-财务指标数据                  |  
+| fina_mainbz         | fina_mainbz       | 沪深股票-财务数据-主营业务构成                  |  
+| disclosure_date     | disclosure_date   | 沪深股票-财务数据-财报披露计划                  |
+| margin_detail       | margin_detail     | 沪深股票-市场参考数据-融资融券交易明细               |  
+
+
 
 ## 特殊处理
 | MySQL表名         | Tushare  接口名   | 数据说明                              |  
