@@ -9,7 +9,7 @@ CREATE TABLE `disclosure_date`
     `end_date`     date               DEFAULT NULL COMMENT '报告期',
     `pre_date`     date               DEFAULT NULL COMMENT '预计披露日期',
     `actual_date`  date               DEFAULT NULL COMMENT '实际披露日期',
-    `modify_date`  varchar(32)        DEFAULT NULL COMMENT '披露日期修正记录',
+    `modify_date`  varchar(64)        DEFAULT NULL COMMENT '披露日期修正记录',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`)
