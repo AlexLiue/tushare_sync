@@ -28,6 +28,8 @@ from tables.disclosure_date import disclosure_date
 from tables.margin_detail import margin_detail
 from tables.top_list import top_list
 from tables.top_inst import top_inst
+from tables.concept import concept
+from tables.concept_detail import concept_detail
 
 
 # 全量历史初始化
@@ -86,6 +88,9 @@ def append():
 
 def init_spc():
     bak_basic.init()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
+    concept.append()  # 沪深股票-市场参考数据-概念股分类（已经停止维护）
+    concept_detail.append()  # 沪深股票-市场参考数据-概念股列表 （已经停止维护）
+
 
 
 def append_spc():

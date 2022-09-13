@@ -1,5 +1,6 @@
 -- stock.top_inst definition
 
+DROP TABLE IF EXISTS `top_inst`;
 CREATE TABLE `top_inst`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',

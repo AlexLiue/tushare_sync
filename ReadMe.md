@@ -68,15 +68,24 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | margin_detail   | margin_detail   | 沪深股票-市场参考数据-融资融券交易明细               |  
 | top_list        | top_list        | 沪深股票-市场参考数据-龙虎榜每日明细           |  
 | top_inst        | top_inst        | 沪深股票-市场参考数据-龙虎榜机构明细          |  
+| repurchase        | repurchase        | 沪深股票-市场参考数据-股票回购          |
+| share_float        | share_float        | 沪深股票-市场参考数据-限售股解禁          |
+
+
+
+
+
+
 
 
 
 
 ## 特殊处理
-| MySQL表名         | Tushare  接口名   | 数据说明                              |  
-|:----------------|:---------------|:----------------------------------|
-| bak_basic       | bak_basic      | 沪深股票-基础信息-备用列表（受限每分钟两次API，单独特殊处理） |  
-
+| MySQL表名              | Tushare  接口名       | 数据说明                              |  
+|:---------------------|:-------------------|:----------------------------------|
+| bak_basic            | bak_basic          | 沪深股票-基础信息-备用列表（受限每分钟两次API，单独特殊处理） |  
+| concept              | concept            | 沪深股票-市场参考数据-概念股分类（已经停止维护）         |
+| concept_detail       | concept_detail     | 沪深股票-市场参考数据-概念股列表 （已经停止维护）                 |
 
 
 ## 主要接口函数
