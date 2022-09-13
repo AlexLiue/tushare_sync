@@ -43,47 +43,46 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 
 ## 已完成的同步表
 ### 常规处理的表
-| MySQL表名                | Tushare  接口名          | 数据说明                              |  
-|:-----------------------|:----------------------|:----------------------------------|  
-| stock_basic            | stock_basic           | 沪深股票-基础信息-股票列表 (每日全量覆盖)           |  
-| trade_cal              | trade_cal             | 沪深股票-基础信息-交易日历 (每日全量覆盖)           |  
-| name_change            | namechange            | 沪深股票-基础信息-股票曾用名 (每日全量覆盖)          |  
-| hs_const               | hs_const              | 沪深股票-基础信息-沪深股通成份股 (每日全量覆盖)        |
-| stk_rewards            | stk_rewards           | 沪深股票-基础信息-管理层薪酬和持股 (每日增量覆盖近10日数据) |
-| daily                  | daily                 | 沪深股票-行情数据-A股日线行情                  |  
-| weekly                 | weekly                | 沪深股票-行情数据-A股周线行情                  |  
-| monthly                | monthly               | 沪深股票-行情数据-A股月线行情                  |  
-| money_flow             | moneyflow             | 沪深股票-行情数据-个股资金流向                  |  
-| stk_limit              | stk_limit             | 沪深股票-行情数据-每日涨跌停价格                 |  
-| money_flow_hsgt        | moneyflow_hsgt        | 沪深股票-行情数据-沪深港通资金流向                |  
-| hsgt_top10             | hsgt_top10            | 沪深股票-行情数据-沪深股通十大成交股               |  
-| ggt_top10              | ggt_top10             | 沪深股票-行情数据-港股通十大成交股                |
-| ggt_daily              | ggt_daily             | 沪深股票-行情数据-港股通每日成交统计               |
-| bak_daily              | bak_daily             | 沪深股票-行情数据-备用行情                    |  
-| forecast               | forecast              | 沪深股票-财务数据-业绩预告                    |  
-| express                | express               | 沪深股票-财务数据-业绩快报                    |  
-| fina_indicator         | fina_indicator        | 沪深股票-财务数据-财务指标数据                  |  
-| fina_mainbz            | fina_mainbz           | 沪深股票-财务数据-主营业务构成                  |  
-| disclosure_date        | disclosure_date       | 沪深股票-财务数据-财报披露计划                  |
-| margin_detail          | margin_detail         | 沪深股票-市场参考数据-融资融券交易明细               |  
-| top_list               | top_list              | 沪深股票-市场参考数据-龙虎榜每日明细           |  
-| top_inst               | top_inst              | 沪深股票-市场参考数据-龙虎榜机构明细          |  
-| repurchase             | repurchase            | 沪深股票-市场参考数据-股票回购          |
-| share_float            | share_float           | 沪深股票-市场参考数据-限售股解禁          |
-| stk_holder_number      | stk_holdernumber      | 沪深股票-市场参考数据-股东人数          |
-
-
-
-
+| MySQL表名                | Tushare  接口名          | 数据说明                                                                           |  
+|:-----------------------|:----------------------|:-------------------------------------------------------------------------------|  
+| stock_basic            | stock_basic           | [沪深股票-基础信息-股票列表](https://tushare.pro/document/2?doc_id=25) (每日全量覆盖)            |  
+| trade_cal              | trade_cal             | [沪深股票-基础信息-交易日历](https://tushare.pro/document/2?doc_id=26) (每日全量覆盖)            |  
+| name_change            | namechange            | [沪深股票-基础信息-股票曾用名](https://tushare.pro/document/2?doc_id=100) (每日全量覆盖)          |  
+| hs_const               | hs_const              | [沪深股票-基础信息-沪深股通成份股](https://tushare.pro/document/2?doc_id=104) (每日全量覆盖)        |
+| stk_rewards            | stk_rewards           | [沪深股票-基础信息-管理层薪酬和持股](https://tushare.pro/document/2?doc_id=194) (每日增量覆盖近10日数据) |
+| daily                  | daily                 | [沪深股票-行情数据-A股日线行情](https://tushare.pro/document/2?doc_id=27)                   |  
+| weekly                 | weekly                | [沪深股票-行情数据-A股周线行情](https://tushare.pro/document/2?doc_id=144)                  |  
+| monthly                | monthly               | [沪深股票-行情数据-A股月线行情](https://tushare.pro/document/2?doc_id=145)                  |  
+| money_flow             | moneyflow             | [沪深股票-行情数据-个股资金流向](https://tushare.pro/document/2?doc_id=170)                  |  
+| stk_limit              | stk_limit             | [沪深股票-行情数据-每日涨跌停价格](https://tushare.pro/document/2?doc_id=183)                 |  
+| money_flow_hsgt        | moneyflow_hsgt        | [沪深股票-行情数据-沪深港通资金流向](https://tushare.pro/document/2?doc_id=47)                 |  
+| hsgt_top10             | hsgt_top10            | [沪深股票-行情数据-沪深股通十大成交股](https://tushare.pro/document/2?doc_id=48)                |  
+| ggt_top10              | ggt_top10             | [沪深股票-行情数据-港股通十大成交股](https://tushare.pro/document/2?doc_id=49)                 |
+| ggt_daily              | ggt_daily             | [沪深股票-行情数据-港股通每日成交统计](https://tushare.pro/document/2?doc_id=196)               |
+| bak_daily              | bak_daily             | [沪深股票-行情数据-备用行情](https://tushare.pro/document/2?doc_id=255)                    |  
+| forecast               | forecast              | [沪深股票-财务数据-业绩预告](https://tushare.pro/document/2?doc_id=45)                     |  
+| express                | express               | [沪深股票-财务数据-业绩快报](https://tushare.pro/document/2?doc_id=46)                     |  
+| fina_indicator         | fina_indicator        | [沪深股票-财务数据-财务指标数据](https://tushare.pro/document/2?doc_id=79)                   |  
+| fina_mainbz            | fina_mainbz           | [沪深股票-财务数据-主营业务构成](https://tushare.pro/document/2?doc_id=81)                   |  
+| disclosure_date        | disclosure_date       | [沪深股票-财务数据-财报披露计划](https://tushare.pro/document/2?doc_id=162)                  |
+| margin_detail          | margin_detail         | [沪深股票-市场参考数据-融资融券交易明细](https://tushare.pro/document/2?doc_id=59)               |  
+| top_list               | top_list              | [沪深股票-市场参考数据-龙虎榜每日明细](https://tushare.pro/document/2?doc_id=106)               |  
+| top_inst               | top_inst              | [沪深股票-市场参考数据-龙虎榜机构交易明细](https://tushare.pro/document/2?doc_id=107)             |  
+| repurchase             | repurchase            | [沪深股票-市场参考数据-股票回购](https://tushare.pro/document/2?doc_id=124)                                                           |
+| share_float            | share_float           | [沪深股票-市场参考数据-限售股解禁](https://tushare.pro/document/2?doc_id=160)                                                          |
+| stk_holder_number      | stk_holdernumber      | [沪深股票-市场参考数据-股东人数](https://tushare.pro/document/2?doc_id=166)                                                           |
 
 
 
 ## 特殊处理
-| MySQL表名              | Tushare  接口名       | 数据说明                              |  
-|:---------------------|:-------------------|:----------------------------------|
-| bak_basic            | bak_basic          | 沪深股票-基础信息-备用列表（受限每分钟两次API，单独特殊处理） |  
-| concept              | concept            | 沪深股票-市场参考数据-概念股分类（已经停止维护）         |
-| concept_detail       | concept_detail     | 沪深股票-市场参考数据-概念股列表 （已经停止维护）                 |
+| MySQL表名         | Tushare  接口名    | 数据说明                                                                            |  
+|:----------------|:----------------|:--------------------------------------------------------------------------------|
+| bak_basic       | bak_basic       | [沪深股票-基础信息-备用列表](https://tushare.pro/document/2?doc_id=262)（受限:2/min）           |  
+| concept         | concept         | [沪深股票-市场参考数据-概念股分类](https://tushare.pro/document/2?doc_id=125)（已经停止维护）          |
+| concept_detail  | concept_detail  | [沪深股票-市场参考数据-概念股列表](https://tushare.pro/document/2?doc_id=126) （已经停止维护）         |
+| cyq_perf        | cyq_perf        | [沪深股票-特色数据-每日筹码及胜率](https://tushare.pro/document/2?doc_id=293) （受限:5/min,10/h)  |
+| cyq_chips       | cyq_chips       | [沪深股票-市场参考数据-每日筹码分布](https://tushare.pro/document/2?doc_id=294) (受限:5/min,10/h) |
+
 
 
 ## 主要接口函数
