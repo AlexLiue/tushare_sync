@@ -67,6 +67,8 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | disclosure_date | disclosure_date | 沪深股票-财务数据-财报披露计划                  |
 | margin_detail   | margin_detail   | 沪深股票-市场参考数据-融资融券交易明细               |  
 | top_list        | top_list        | 沪深股票-市场参考数据-龙虎榜每日明细           |  
+| top_inst        | top_inst        | 沪深股票-市场参考数据-龙虎榜机构明细          |  
+
 
 
 

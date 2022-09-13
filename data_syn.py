@@ -27,6 +27,8 @@ from tables.fina_mainbz import fina_mainbz
 from tables.disclosure_date import disclosure_date
 from tables.margin_detail import margin_detail
 from tables.top_list import top_list
+from tables.top_inst import top_inst
+
 
 # 全量历史初始化
 def init():
@@ -52,6 +54,8 @@ def init():
     disclosure_date.init()  # 沪深股票-财务数据-财报披露计划
     margin_detail.init()  # 沪深股票-市场参考数据-融资融券交易明细
     top_list.init()  # 沪深股票-市场参考数据-龙虎榜每日明细
+    top_inst.init()  # 沪深股票-市场参考数据-龙虎榜机构明细
+
 
 # 增量数据追加同步
 def append():
@@ -64,7 +68,7 @@ def append():
     weekly.append()  # 沪深股票-行情数据-A股周线行情
     monthly.append()  # 沪深股票-行情数据-A股月线行情
     money_flow.append()  # 沪深股票-行情数据-个股资金流向
-    stk_limit.append()   # 沪深股票-行情数据-每日涨跌停价格
+    stk_limit.append()  # 沪深股票-行情数据-每日涨跌停价格
     money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
     hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
     ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
@@ -77,6 +81,8 @@ def append():
     disclosure_date.append()  # 沪深股票-财务数据-财报披露计划
     margin_detail.append()  # 沪深股票-市场参考数据-融资融券交易明细
     top_list.append()  # 沪深股票-市场参考数据-龙虎榜每日明细
+    top_inst.append()  # 沪深股票-市场参考数据-龙虎榜机构明细
+
 
 def init_spc():
     bak_basic.init()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
