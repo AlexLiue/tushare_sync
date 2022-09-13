@@ -56,8 +56,8 @@ def init():
     # express.init()  # 沪深股票-财务数据-业绩快报
     # fina_indicator.init()  # 沪深股票-财务数据-财务指标数据
     # fina_mainbz.init()  # 沪深股票-财务数据-主营业务构成
-    disclosure_date.init()  # 沪深股票-财务数据-财报披露计划
-    margin_detail.init()  # 沪深股票-市场参考数据-融资融券交易明细
+    # disclosure_date.init()  # 沪深股票-财务数据-财报披露计划
+    # margin_detail.init()  # 沪深股票-市场参考数据-融资融券交易明细
     top_list.init()  # 沪深股票-市场参考数据-龙虎榜每日明细
     top_inst.init()  # 沪深股票-市场参考数据-龙虎榜机构明细
     stk_holder_number.init()  # 沪深股票-市场参考数据-股东人数

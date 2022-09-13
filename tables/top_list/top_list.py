@@ -54,7 +54,7 @@ def init():
         start_date='20050101',
         end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         limit=10000,
-        interval=0.2
+        interval=0.4
     )
 
 # 增量追加表数据
@@ -83,7 +83,7 @@ def append():
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-10)).strftime('%Y%m%d')),
         end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         limit=3000,
-        interval=0.2
+        interval=0.4
     )
 
 

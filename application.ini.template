@@ -1,5 +1,5 @@
 [mysql]
-host=47.240.113.220
+host=mysql
 user=root
 password=alex
 port=3306
