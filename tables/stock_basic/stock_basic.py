@@ -1,4 +1,3 @@
-
 """
 ============================
 # -*- coding: utf-8 -*-
@@ -33,7 +32,8 @@ def init():
     logger.info("Query data from tushare with api[%s], fields[%s]" % (api_name, fields))
     data = ts_api.query(api_name, fields, exchange='', list_status='L')
 
-    logger.info('Write [%d] records into table [stock_basic] with [%s]' % (data.last_valid_index()+1, connection.engine))
+    logger.info(
+        'Write [%d] records into table [stock_basic] with [%s]' % (data.last_valid_index() + 1, connection.engine))
     data.to_sql('stock_basic', connection, index=False, if_exists='append', chunksize=5000)
 
 
