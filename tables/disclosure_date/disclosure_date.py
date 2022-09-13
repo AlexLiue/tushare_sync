@@ -42,7 +42,7 @@ def init():
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
         limit=3000,
-        interval=0.2
+        interval=0.4
     )
 
 
@@ -64,7 +64,7 @@ def append():
         end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
         limit=3000,
-        interval=0.2
+        interval=0.4
     )
 
 
