@@ -5,7 +5,6 @@
 # @Author  : PcLiu
 # @FileName: stk_holdernumber.py
 ===========================
-
 接口：stk_holdernumber
 描述：获取上市公司股东户数数据，数据不定期公布
 限量：单次最大3000,总量不限制

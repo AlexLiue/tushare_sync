@@ -225,7 +225,6 @@ def exec_sync_with_ts_code(table_name, api_name, fields, date_column, start_date
 
 
 # fields 字段列表
-#
 def exec_sync_without_ts_code(table_name, api_name, fields,
                               date_column, start_date, end_date, date_step, limit, interval):
     """

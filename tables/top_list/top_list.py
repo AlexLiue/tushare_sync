@@ -57,7 +57,6 @@ def init():
         interval=0.2
     )
 
-
 # 增量追加表数据
 def append():
     exec_sync_with_spec_date_column(
