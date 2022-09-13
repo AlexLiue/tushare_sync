@@ -35,14 +35,15 @@ def get_mock_connection():
     db_url = 'mysql://%s:%s@%s:%s/%s?charset=utf8&use_unicode=1' % (db_user, db_password, db_host, db_port, db_database)
     return create_engine(db_url)
 
+
 def get_mysql_connection():
     cfg = get_cfg()
     return pymysql.connect(host=cfg['mysql']['host'],
-                         port=int(cfg['mysql']['port']),
-                         user=cfg['mysql']['user'],
-                         passwd=cfg['mysql']['password'],
-                         db=cfg['mysql']['database'],
-                         charset='utf8')
+                           port=int(cfg['mysql']['port']),
+                           user=cfg['mysql']['user'],
+                           passwd=cfg['mysql']['password'],
+                           db=cfg['mysql']['database'],
+                           charset='utf8')
 
 
 # 构建 Tushare 查询 API 接口对象
@@ -287,6 +288,66 @@ def exec_sync_without_ts_code(table_name, api_name, fields,
         # 更新下一次微批时间段
         step_start = step_start + datetime.timedelta(date_step)
         step_end = min_date(step_end + datetime.timedelta(date_step), end)
+
+
+# fields 字段列表
+#
+def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
+                                    start_date, end_date, limit, interval):
+    """
+    执行数据同步并存储-基于 trade_date 字段
+    :param table_name: 表名
+    :param api_name: API 名
+    :param fields: 字段列表
+    :param date_column: 增量时间字段列
+    :param start_date: 开始时间
+    :param end_date: 结束时间
+    :param limit: 每次查询的记录条数
+    :param interval: 每次查询的时间间隔
+    :return: None
+    """
+    # 创建 API / Connection / Logger 对象
+    ts_api = get_tushare_api()
+    connection = get_mock_connection()
+    logger = get_logger(table_name, 'data_syn.log')
+
+    # 清理历史数据
+    clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
+                (table_name, date_column, start_date, date_column, end_date)
+    logger.info('Execute Clean SQL [%s]' % clean_sql)
+    exec_mysql_sql(clean_sql)
+
+    # 数据同步时间开始时间和结束时间, 包含前后边界
+    start = datetime.datetime.strptime(start_date, '%Y%m%d')
+    end = datetime.datetime.strptime(end_date, '%Y%m%d')
+
+    step = start  # 微批开始时间
+
+    while step <= end:
+        step_date = str(step.strftime('%Y%m%d'))
+        offset = 0
+        while True:
+            logger.info("Query [%s] from tushare with api[%s] %s[%s]"
+                        " from offset[%d] limit[%d]" % (table_name, api_name, date_column, step_date, offset, limit))
+            data = ts_api.query(api_name,
+                                **{
+                                    date_column: step_date,
+                                    "offset": offset,
+                                    "limit": limit
+                                },
+                                fields=fields)
+            time.sleep(interval)
+            if data.last_valid_index() is not None:
+                size = data.last_valid_index() + 1
+                logger.info('Write [%d] records into table [%s] with [%s]' % (size, table_name, connection.engine))
+                data.to_sql(table_name, connection, index=False, if_exists='append', chunksize=limit)
+                offset = offset + size
+                if size < limit:
+                    break
+            else:
+                break
+        # 更新下一次微批时间段
+        step = step + datetime.timedelta(days=1)
 
 
 if __name__ == '__main__':

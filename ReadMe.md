@@ -26,24 +26,76 @@ python data_syn.py --mode append
 ```
 说明1: 部分表数据量相对较小或者不具备增量同步逻辑，因此选择每日全量同步
 
+## MySQL 结果数据示列
+沪深股票-行情数据-A股日线行情（daily表数据）
+```text
+id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vol      |amount     |
+---+---------+----------+------+------+------+------+---------+------+-------+---------+-----------+
+  1|689009.SH|2022-09-09| 43.05|  43.9|  42.7|  43.7|    43.03|  0.67| 1.5571| 15372.24|  66680.763|
+  2|873223.BJ|2022-09-09|   3.8|  3.87|  3.79|  3.82|     3.79|  0.03| 0.7916|  6070.21|   2322.889|
+  3|873169.BJ|2022-09-09|  6.38|  6.41|  6.36|  6.39|     6.38|  0.01| 0.1567|  1865.95|   1190.126|
+  4|872925.BJ|2022-09-09| 15.89| 15.92| 15.68| 15.87|    15.92| -0.05|-0.3141|     20.5|     32.486|
+  5|871981.BJ|2022-09-09|  16.8|  16.8| 16.58| 16.75|    16.68|  0.07| 0.4197|   686.83|   1142.099|
+  6|871970.BJ|2022-09-09|  9.01|  9.03|  9.01|  9.02|     9.01|  0.01|  0.111|    119.0|    107.361|
+  7|871857.BJ|2022-09-09|  9.11|  9.11|  8.96|   9.0|     8.99|  0.01| 0.1112|    57.68|     51.906|
+  8|871642.BJ|2022-09-09|  7.04|  7.04|  6.89|  7.04|     7.04|   0.0|    0.0|   552.55|    383.902|
+```
+
+## 已完成的同步表
+### 常规处理的表
+| MySQL表名         | Tushare  接口名    | 数据说明                              |  
+|:----------------|:----------------|:----------------------------------|  
+| stock_basic     | stock_basic     | 沪深股票-基础信息-股票列表 (每日全量覆盖)           |  
+| trade_cal       | trade_cal       | 沪深股票-基础信息-交易日历 (每日全量覆盖)           |  
+| name_change     | namechange      | 沪深股票-基础信息-股票曾用名 (每日全量覆盖)          |  
+| hs_const        | hs_const        | 沪深股票-基础信息-沪深股通成份股 (每日全量覆盖)        |
+| stk_rewards     | stk_rewards     | 沪深股票-基础信息-管理层薪酬和持股 (每日增量覆盖近10日数据) |
+| daily           | daily           | 沪深股票-行情数据-A股日线行情                  |  
+| weekly          | weekly          | 沪深股票-行情数据-A股周线行情                  |  
+| monthly         | monthly         | 沪深股票-行情数据-A股月线行情                  |  
+| money_flow      | moneyflow       | 沪深股票-行情数据-个股资金流向                  |  
+| stk_limit       | stk_limit       | 沪深股票-行情数据-每日涨跌停价格                 |  
+| money_flow_hsgt | moneyflow_hsgt  | 沪深股票-行情数据-沪深港通资金流向                |  
+| hsgt_top10      | hsgt_top10      | 沪深股票-行情数据-沪深股通十大成交股               |  
+| ggt_top10       | ggt_top10       | 沪深股票-行情数据-港股通十大成交股                |
+| ggt_daily       | ggt_daily       | 沪深股票-行情数据-港股通每日成交统计               |
+| bak_daily       | bak_daily       | 沪深股票-行情数据-备用行情                    |  
+| forecast        | forecast        | 沪深股票-财务数据-业绩预告                    |  
+| express         | express         | 沪深股票-财务数据-业绩快报                    |  
+| fina_indicator  | fina_indicator  | 沪深股票-财务数据-财务指标数据                  |  
+| fina_mainbz     | fina_mainbz     | 沪深股票-财务数据-主营业务构成                  |  
+| disclosure_date | disclosure_date | 沪深股票-财务数据-财报披露计划                  |
+| margin_detail   | margin_detail   | 沪深股票-市场参考数据-融资融券交易明细               |  
+| top_list        | top_list        | 沪深股票-市场参考数据-龙虎榜每日明细           |  
+
+
+
+## 特殊处理
+| MySQL表名         | Tushare  接口名   | 数据说明                              |  
+|:----------------|:---------------|:----------------------------------|
+| bak_basic       | bak_basic      | 沪深股票-基础信息-备用列表（受限每分钟两次API，单独特殊处理） |  
+
+
+
 ## 主要接口函数
 ```python
 import datetime
 
 import time
 from utils.utils import get_tushare_api,get_mock_connection,get_logger,exec_mysql_sql,min_date
-def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, limit, interval):
+def exec_sync_without_ts_code(table_name, api_name, fields,
+                              date_column, start_date, end_date, date_step, limit, interval):
     """
     执行数据同步并存储
     :param table_name: 表名
     :param api_name: API 名
     :param fields: 字段列表
+    :param date_column: 增量时间字段列
     :param start_date: 开始时间
     :param end_date: 结束时间
     :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
     :param limit: 每次查询的记录条数
     :param interval: 每次查询的时间间隔
-    :param clean_sql: 数据存储前数据清理SQL
     :return: None
     """
     # 创建 API / Connection / Logger 对象
@@ -52,7 +104,8 @@ def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, lim
     logger = get_logger(table_name, 'data_syn.log')
 
     # 清理历史数据
-    clean_sql="DELETE FROM %s WHERE trade_date>='%s' AND trade_date<='%s'" % (table_name, start_date, end_date)
+    clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
+                (table_name, date_column, start_date, date_column, end_date)
     logger.info('Execute Clean SQL [%s]' % clean_sql)
     exec_mysql_sql(clean_sql)
 
@@ -79,7 +132,6 @@ def exec_sync(table_name, api_name, fields, start_date, end_date, date_step, lim
                                     "limit": limit
                                 },
                                 fields=fields)
-
             time.sleep(interval)
             if data.last_valid_index() is not None:
                 size = data.last_valid_index() + 1
@@ -186,54 +238,6 @@ ssh://anaconda@47.240.xxx.xxx:22/home/anaconda/anaconda3/bin/python -u /app/stoc
 2022-09-10 09:58:00,967 - name_change - INFO - Query data from tushare with api[namechange], fields[ts_code,name,start_date,end_date,ann_date,change_reason]
 2022-09-10 09:58:01,700 - name_change - INFO - Write [10000] records into table [stock_basic] with [Engine(mysql://root:***@47.240.xxx.xxx:3320/stock?charset=utf8&use_unicode=1)]
 ```
-
-## MySQL 结果数据示列
-沪深股票-行情数据-A股日线行情（daily表数据）
-```text
-id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vol      |amount     |
----+---------+----------+------+------+------+------+---------+------+-------+---------+-----------+
-  1|689009.SH|2022-09-09| 43.05|  43.9|  42.7|  43.7|    43.03|  0.67| 1.5571| 15372.24|  66680.763|
-  2|873223.BJ|2022-09-09|   3.8|  3.87|  3.79|  3.82|     3.79|  0.03| 0.7916|  6070.21|   2322.889|
-  3|873169.BJ|2022-09-09|  6.38|  6.41|  6.36|  6.39|     6.38|  0.01| 0.1567|  1865.95|   1190.126|
-  4|872925.BJ|2022-09-09| 15.89| 15.92| 15.68| 15.87|    15.92| -0.05|-0.3141|     20.5|     32.486|
-  5|871981.BJ|2022-09-09|  16.8|  16.8| 16.58| 16.75|    16.68|  0.07| 0.4197|   686.83|   1142.099|
-  6|871970.BJ|2022-09-09|  9.01|  9.03|  9.01|  9.02|     9.01|  0.01|  0.111|    119.0|    107.361|
-  7|871857.BJ|2022-09-09|  9.11|  9.11|  8.96|   9.0|     8.99|  0.01| 0.1112|    57.68|     51.906|
-  8|871642.BJ|2022-09-09|  7.04|  7.04|  6.89|  7.04|     7.04|   0.0|    0.0|   552.55|    383.902|
-```
-
-## 已完成的同步表
-### 常规处理的表
-| MySQL表名             | Tushare  接口名      | 数据说明                              |  
-|:--------------------|:------------------|:----------------------------------|  
-| stock_basic         | stock_basic       | 沪深股票-基础信息-股票列表 (每日全量覆盖)           |  
-| trade_cal           | trade_cal         | 沪深股票-基础信息-交易日历 (每日全量覆盖)           |  
-| name_change         | namechange        | 沪深股票-基础信息-股票曾用名 (每日全量覆盖)          |  
-| hs_const            | hs_const          | 沪深股票-基础信息-沪深股通成份股 (每日全量覆盖)        |
-| stk_rewards         | stk_rewards       | 沪深股票-基础信息-管理层薪酬和持股 (每日增量覆盖近10日数据) |
-| daily               | daily             | 沪深股票-行情数据-A股日线行情                  |  
-| weekly              | weekly            | 沪深股票-行情数据-A股周线行情                  |  
-| monthly             | monthly           | 沪深股票-行情数据-A股月线行情                  |  
-| money_flow          | moneyflow         | 沪深股票-行情数据-个股资金流向                  |  
-| stk_limit           | stk_limit         | 沪深股票-行情数据-每日涨跌停价格                 |  
-| money_flow_hsgt     | moneyflow_hsgt    | 沪深股票-行情数据-沪深港通资金流向                |  
-| hsgt_top10          | hsgt_top10        | 沪深股票-行情数据-沪深股通十大成交股               |  
-| ggt_top10           | ggt_top10         | 沪深股票-行情数据-港股通十大成交股                |
-| ggt_daily           | ggt_daily         | 沪深股票-行情数据-港股通每日成交统计               |
-| bak_daily           | bak_daily         | 沪深股票-行情数据-备用行情                    |  
-| forecast            | forecast          | 沪深股票-财务数据-业绩预告                    |  
-| express             | express           | 沪深股票-财务数据-业绩快报                    |  
-| fina_indicator      | fina_indicator    | 沪深股票-财务数据-财务指标数据                  |  
-| fina_mainbz         | fina_mainbz       | 沪深股票-财务数据-主营业务构成                  |  
-| disclosure_date     | disclosure_date   | 沪深股票-财务数据-财报披露计划                  |
-| margin_detail       | margin_detail     | 沪深股票-市场参考数据-融资融券交易明细               |  
-
-
-
-## 特殊处理
-| MySQL表名         | Tushare  接口名   | 数据说明                              |  
-|:----------------|:---------------|:----------------------------------|
-| bak_basic       | bak_basic      | 沪深股票-基础信息-备用列表（受限每分钟两次API，单独特殊处理） |  
 
 
 ## 其他
