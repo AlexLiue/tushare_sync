@@ -31,7 +31,8 @@ from tables.top_inst import top_inst
 from tables.concept import concept
 from tables.concept_detail import concept_detail
 from tables.stk_holder_number import stk_holder_number
-
+from tables.cyq_perf import cyq_perf
+from tables.cyq_chips import cyq_chips
 
 
 # 全量历史初始化
@@ -60,7 +61,6 @@ def init():
     top_list.init()  # 沪深股票-市场参考数据-龙虎榜每日明细
     top_inst.init()  # 沪深股票-市场参考数据-龙虎榜机构明细
     stk_holder_number.init()  # 沪深股票-市场参考数据-股东人数
-
 
 
 # 增量数据追加同步
@@ -93,13 +93,16 @@ def append():
 
 def init_spc():
     bak_basic.init()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
-    concept.append()  # 沪深股票-市场参考数据-概念股分类（已经停止维护）
-    concept_detail.append()  # 沪深股票-市场参考数据-概念股列表 （已经停止维护）
-
+    concept.init()  # 沪深股票-市场参考数据-概念股分类（已经停止维护）
+    concept_detail.init()  # 沪深股票-市场参考数据-概念股列表 （已经停止维护）
+    cyq_perf.init()  # 沪深股票-特色数据-每日筹码及胜率（受限:5/min,10/h)
+    cyq_chips.init()  # 沪深股票-市场参考数据-每日筹码分布 (受限:5/min,10/h)
 
 
 def append_spc():
     bak_basic.append()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
+    cyq_perf.append()  # 沪深股票-特色数据-每日筹码及胜率（受限:5/min,10/h)
+    cyq_chips.append()  # 沪深股票-市场参考数据-每日筹码分布 (受限:5/min,10/h)
 
 
 def use_age():
