@@ -60,8 +60,9 @@ def get_logger(log_name, file_name):
     logger = logging.getLogger(log_name)
     logger.setLevel(log_level)
     if file_name != '':
-        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../tables', 'logs')
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
         if not os.path.exists(log_dir):
+            logger.info("Make logger dir [%s]" % str(log_dir))
             os.makedirs(log_dir)
         handler = logging.FileHandler(os.path.join(log_dir, file_name),
                                       encoding='utf-8')
