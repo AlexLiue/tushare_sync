@@ -75,9 +75,10 @@ def get_logger(log_name, file_name):
 def exec_mysql_sql(sql):
     db = get_mysql_connection()
     cursor = db.cursor()
-    cursor.execute(sql + ';')
+    counts = cursor.execute(sql + ';')
     cursor.close()
     db.close()
+    return counts
 
 
 # 执行 SQL 脚本
@@ -162,7 +163,8 @@ def exec_sync_with_ts_code(table_name, api_name, fields, date_column, start_date
     clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
                 (table_name, date_column, start_date, date_column, end_date)
     logger.info('Execute Clean SQL [%s]' % clean_sql)
-    exec_mysql_sql(clean_sql)
+    counts = exec_mysql_sql(clean_sql)
+    logger.info("Execute Clean SQL Affect [%d] records" % counts)
 
     logger.info("Sync table[%s] in ts_code mode start_date[%s] end_date[%s]" % (table_name, start_date, end_date))
 
@@ -249,7 +251,8 @@ def exec_sync_without_ts_code(table_name, api_name, fields,
     clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
                 (table_name, date_column, start_date, date_column, end_date)
     logger.info('Execute Clean SQL [%s]' % clean_sql)
-    exec_mysql_sql(clean_sql)
+    counts = exec_mysql_sql(clean_sql)
+    logger.info("Execute Clean SQL Affect [%d] records" % counts)
 
     # 数据同步时间开始时间和结束时间, 包含前后边界
     start = datetime.datetime.strptime(start_date, '%Y%m%d')
@@ -314,7 +317,8 @@ def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
     clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
                 (table_name, date_column, start_date, date_column, end_date)
     logger.info('Execute Clean SQL [%s]' % clean_sql)
-    exec_mysql_sql(clean_sql)
+    counts = exec_mysql_sql(clean_sql)
+    logger.info("Execute Clean SQL Affect [%d] records" % counts)
 
     # 数据同步时间开始时间和结束时间, 包含前后边界
     start = datetime.datetime.strptime(start_date, '%Y%m%d')

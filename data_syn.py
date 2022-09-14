@@ -65,24 +65,24 @@ def init():
 
 # 增量数据追加同步
 def append():
-    stock_basic.append()  # 沪深股票-基础信息-股票列表
-    trade_cal.append()  # 沪深股票-基础信息-交易日历
-    name_change.append()  # 沪深股票-基础信息-股票曾用名
-    hs_const.append()  # 沪深股票-基础信息-沪深股通成份股
-    stk_rewards.append()  # 沪深股票-基础信息-管理层薪酬和持股
-    daily.append()  # 沪深股票-行情数据-A股日线行情
-    weekly.append()  # 沪深股票-行情数据-A股周线行情
-    monthly.append()  # 沪深股票-行情数据-A股月线行情
-    money_flow.append()  # 沪深股票-行情数据-个股资金流向
-    stk_limit.append()  # 沪深股票-行情数据-每日涨跌停价格
-    money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
-    hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
-    ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
-    ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
-    bak_daily.append()  # 沪深股票-行情数据-备用行情
-    forecast.append()  # 沪深股票-财务数据-业绩预告
-    express.append()  # 沪深股票-财务数据-业绩快报
-    fina_indicator.append()  # 沪深股票-财务数据-财务指标数据
+    # stock_basic.append()  # 沪深股票-基础信息-股票列表
+    # trade_cal.append()  # 沪深股票-基础信息-交易日历
+    # name_change.append()  # 沪深股票-基础信息-股票曾用名
+    # hs_const.append()  # 沪深股票-基础信息-沪深股通成份股
+    # stk_rewards.append()  # 沪深股票-基础信息-管理层薪酬和持股
+    # daily.append()  # 沪深股票-行情数据-A股日线行情
+    # weekly.append()  # 沪深股票-行情数据-A股周线行情
+    # monthly.append()  # 沪深股票-行情数据-A股月线行情
+    # money_flow.append()  # 沪深股票-行情数据-个股资金流向
+    # stk_limit.append()  # 沪深股票-行情数据-每日涨跌停价格
+    # money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
+    # hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
+    # ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
+    # ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
+    # bak_daily.append()  # 沪深股票-行情数据-备用行情
+    # forecast.append()  # 沪深股票-财务数据-业绩预告
+    # express.append()  # 沪深股票-财务数据-业绩快报
+    # fina_indicator.append()  # 沪深股票-财务数据-财务指标数据
     fina_mainbz.append()  # 沪深股票-财务数据-主营业务构成
     disclosure_date.append()  # 沪深股票-财务数据-财报披露计划
     margin_detail.append()  # 沪深股票-市场参考数据-融资融券交易明细
