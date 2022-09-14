@@ -13,3 +13,4 @@ token=74094aefc773c0305d48c692d8bb0dc22fbdf8b8038e
 [logging]
 level=INFO
 filename=data_syn.log
+backupDays=14
