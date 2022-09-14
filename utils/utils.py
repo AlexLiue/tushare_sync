@@ -73,11 +73,12 @@ def get_logger(log_name, file_name):
 
 
 def exec_mysql_sql(sql):
-    db = get_mysql_connection()
-    cursor = db.cursor()
+    conn = get_mysql_connection()
+    cursor = conn.cursor()
     counts = cursor.execute(sql + ';')
+    conn.commit()
     cursor.close()
-    db.close()
+    conn.close()
     return counts
 
 
