@@ -7,13 +7,12 @@
 
 import configparser
 import datetime
-import logging
 import os
-import time
-
 import pymysql
 import tushare as ts
 from sqlalchemy import create_engine
+import logging
+import time
 
 
 # 加载配置信息函数
@@ -57,19 +56,28 @@ def get_tushare_api():
 def get_logger(log_name, file_name):
     cfg = get_cfg()
     log_level = cfg['logging']['level']
+    backup_days = int(cfg['logging']['backupDays'])
     logger = logging.getLogger(log_name)
     logger.setLevel(log_level)
+    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
+    log_file = os.path.join(log_dir, '%s.%s' % (file_name, str(datetime.datetime.now().strftime('%Y-%m-%d'))))
     if file_name != '':
-        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
         if not os.path.exists(log_dir):
             logger.info("Make logger dir [%s]" % str(log_dir))
             os.makedirs(log_dir)
-        handler = logging.FileHandler(os.path.join(log_dir, file_name),
-                                      encoding='utf-8')
+        clen_file = os.path.join(log_dir, 'file_name.%s' %
+                                 str((datetime.datetime.now() +
+                                      datetime.timedelta(days=-backup_days)).strftime('%Y-%m-%d'))
+                                 )
+
+        if os.path.exists(clen_file):
+            os.remove(clen_file)
+        handler = logging.FileHandler(log_file, encoding='utf-8')
         file_fmt = '[%(asctime)s] [%(levelname)s] [ %(filename)s:%(lineno)s - %(name)s ] %(message)s '
         formatter = logging.Formatter(file_fmt)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+    logger.info("Logger File [%s]" % log_file)
     return logger
 
 
