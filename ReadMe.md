@@ -5,10 +5,32 @@
 - 数据包含: A股、港股、日线、周线、月线等
 
 ## 使用方法
+### Step0: 环境准备
+#### Python 环境准备
+```shell
+apt-get install libmysqlclient-dev
+ 
+pip install pandas
+pip install numpy==1.21.5
+pip install pymysql
+pip install tushare
+pip install sqlalchemy
+pip install mysqlclient
+
+
+```
+#### MySQL 数据库环境准备
+```sql
+CREATE DATABASE stock;
+CREATE USER 'stock'@'%' IDENTIFIED BY 'stock';
+GRANT ALL PRIVILEGES ON stock.* TO 'stock'@'%' ;
+FLUSH PRIVILEGES;
+```
+
 
 ### Step1: 修改配置文件信息(本地数据库地址信息、Tushare 账号 token)
 ```shell
-mv application.ini.template application.ini
+mv application.ini application.ini
 # 然后修改 application.ini 中的 mysql 的地址信息 和 Tushare 账号 token
 ```
 
@@ -18,7 +40,7 @@ python data_syn.py --mode init
 ```
 说明1: 执行前要求 application.ini 配置中的 mysql.database 库已创建, 程序会自动在该数据库下创建数据表   
 说明2: Tushare 对不同积分的账户存在权限限制, 本程序代码要求 积分额度 2000 以上, 如不足可根据权限自行删减 [data_syn.py](data_syn.py) 中的部分表   
-说明3: 部分表数据同步存在流量限制, 全量初始化时间相对较长   
+说明3: 部分表数据同步存在流量限制, 全量初始化时间相对较长     
 
 ### Step3: 每日增量拉取同步
 ```shell
