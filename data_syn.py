@@ -37,15 +37,15 @@ from tables.cyq_chips import cyq_chips
 
 # 全量历史初始化
 def init():
-    stock_basic.init()  # 沪深股票-基础信息-股票列表
-    trade_cal.init()  # 沪深股票-基础信息-交易日历
-    name_change.init()  # 沪深股票-基础信息-股票曾用名
-    hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
+    # stock_basic.init()  # 沪深股票-基础信息-股票列表
+    # trade_cal.init()  # 沪深股票-基础信息-交易日历
+    # name_change.init()  # 沪深股票-基础信息-股票曾用名
+    # hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
     stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
-    daily.init()  # 沪深股票-行情数据-A股日线行情
-    weekly.init()  # 沪深股票-行情数据-A股周线行情
-    monthly.init()  # 沪深股票-行情数据-A股月线行情
-    money_flow.init()  # 沪深股票-行情数据-个股资金流向
+    # daily.init()  # 沪深股票-行情数据-A股日线行情
+    # weekly.init()  # 沪深股票-行情数据-A股周线行情
+    # monthly.init()  # 沪深股票-行情数据-A股月线行情
+    # money_flow.init()  # 沪深股票-行情数据-个股资金流向
     stk_limit.init()  # 沪深股票-行情数据-每日涨跌停价格
     money_flow_hsgt.init()  # 沪深股票-行情数据-沪深港通资金流向
     hsgt_top10.init()  # 沪深股票-行情数据-沪深股通十大成交股
