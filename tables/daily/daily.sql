@@ -5,7 +5,7 @@ CREATE TABLE `daily`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT '股票代码',
-    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int                DEFAULT NULL COMMENT '交易日期',
     `open`         double             DEFAULT NULL COMMENT '开盘价',
     `high`         double             DEFAULT NULL COMMENT '最高价',
     `low`          double             DEFAULT NULL COMMENT '最低价',
@@ -17,5 +17,9 @@ CREATE TABLE `daily`
     `amount`       double             DEFAULT NULL COMMENT '成交额 （千元）',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='A股日线行情';
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `daily_ts_code_idx` (`ts_code`, `trade_date`) USING BTREE,
+    UNIQUE KEY `daily_trade_date_idx` (`trade_date`, `ts_code`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='A股日线行情';
