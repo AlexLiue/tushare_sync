@@ -5,7 +5,7 @@ CREATE TABLE `cyq_perf`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT '股票代码',
-    `trade_date`   date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
     `his_low`      double             DEFAULT NULL COMMENT '历史最低价',
     `his_high`     double             DEFAULT NULL COMMENT '历史最高价',
     `cost_5pct`    double             DEFAULT NULL COMMENT '5分位成本',

@@ -5,8 +5,8 @@ CREATE TABLE `stk_rewards`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT 'TS股票代码',
-    `ann_date`     date               DEFAULT NULL COMMENT '公告日期',
-    `end_date`     date               DEFAULT NULL COMMENT '截止日期',
+    `ann_date`     int               DEFAULT NULL COMMENT '公告日期',
+    `end_date`     int               DEFAULT NULL COMMENT '截止日期',
     `name`         varchar(64)        DEFAULT NULL COMMENT '姓名',
     `title`        varchar(64)        DEFAULT NULL COMMENT '职务',
     `reward`       double             DEFAULT NULL COMMENT '报酬',

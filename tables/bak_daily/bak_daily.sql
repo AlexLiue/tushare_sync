@@ -5,7 +5,7 @@ CREATE TABLE `bak_daily`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT '股票代码',
-    `trade_date`   date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
     `name`         varchar(64)        DEFAULT NULL COMMENT '股票名称',
     `pct_change`   double             DEFAULT NULL COMMENT '涨跌幅',
     `close`        double             DEFAULT NULL COMMENT '收盘价',

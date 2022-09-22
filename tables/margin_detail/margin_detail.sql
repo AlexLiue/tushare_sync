@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `margin_detail`;
 CREATE TABLE `margin_detail`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `trade_date`   date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT 'TS股票代码',
     `name`         varchar(128)       DEFAULT NULL COMMENT '股票名称',
     `rzye`         double             DEFAULT NULL COMMENT '融资余额(元)',

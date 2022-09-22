@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `hsgt_top10`;
 CREATE TABLE `hsgt_top10`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `trade_date`   date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT '股票代码',
     `name`         varchar(64)        DEFAULT NULL COMMENT '股票名称',
     `close`        double             DEFAULT NULL COMMENT '收盘价',

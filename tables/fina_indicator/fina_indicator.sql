@@ -5,8 +5,8 @@ CREATE TABLE `fina_indicator`
 (
     `id`                           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`                      varchar(16)        DEFAULT NULL COMMENT 'TS代码',
-    `ann_date`                     date               DEFAULT NULL COMMENT '公告日期',
-    `end_date`                     date               DEFAULT NULL COMMENT '报告期',
+    `ann_date`                     int               DEFAULT NULL COMMENT '公告日期',
+    `end_date`                     int               DEFAULT NULL COMMENT '报告期',
     `eps`                          double             DEFAULT NULL COMMENT '基本每股收益',
     `dt_eps`                       double             DEFAULT NULL COMMENT '稀释每股收益',
     `total_revenue_ps`             double             DEFAULT NULL COMMENT '每股营业总收入',

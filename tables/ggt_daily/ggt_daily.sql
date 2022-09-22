@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `ggt_daily`;
 CREATE TABLE `ggt_daily`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `trade_date`   date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
     `buy_amount`   double             DEFAULT NULL COMMENT '买入成交金额（亿元）',
     `buy_volume`   double             DEFAULT NULL COMMENT '买入成交笔数（万笔）',
     `sell_amount`  double             DEFAULT NULL COMMENT '卖出成交金额（亿元）',

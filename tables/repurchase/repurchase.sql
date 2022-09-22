@@ -5,10 +5,10 @@ CREATE TABLE `repurchase`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT 'TS代码',
-    `ann_date`     date               DEFAULT NULL COMMENT '公告日期',
-    `end_date`     date               DEFAULT NULL COMMENT '截止日期',
+    `ann_date`     int               DEFAULT NULL COMMENT '公告日期',
+    `end_date`     int               DEFAULT NULL COMMENT '截止日期',
     `proc`         varchar(32)        DEFAULT NULL COMMENT '进度',
-    `exp_date`     date               DEFAULT NULL COMMENT '过期日期',
+    `exp_date`     int               DEFAULT NULL COMMENT '过期日期',
     `vol`          double             DEFAULT NULL COMMENT '回购数量',
     `amount`       double             DEFAULT NULL COMMENT '回购金额',
     `high_limit`   double             DEFAULT NULL COMMENT '回购最高价',

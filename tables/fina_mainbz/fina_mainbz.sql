@@ -5,7 +5,7 @@ CREATE TABLE `fina_mainbz`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT 'TS代码',
-    `end_date`     date               DEFAULT NULL COMMENT '报告期',
+    `end_date`     int               DEFAULT NULL COMMENT '报告期',
     `bz_item`      varchar(64)        DEFAULT NULL COMMENT '主营业务项目',
     `bz_code`      varchar(16)        DEFAULT NULL COMMENT '项目代码',
     `bz_sales`     double             DEFAULT NULL COMMENT '主营业务收入(元)',

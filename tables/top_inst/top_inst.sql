@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `top_inst`;
 CREATE TABLE `top_inst`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `trade_date`   date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT 'TS代码',
     `exalter`      varchar(64)        DEFAULT NULL COMMENT '营业部名称',
     `buy`          double             DEFAULT NULL COMMENT '买入额（万）',

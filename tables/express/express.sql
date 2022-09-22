@@ -5,8 +5,8 @@ CREATE TABLE `express`
 (
     `id`                         bigint    NOT NULL AUTO_INCREMENT COMMENT '沪深股票-财务数据-业绩快报',
     `ts_code`                    varchar(16)        DEFAULT NULL COMMENT 'TS股票代码',
-    `ann_date`                   date               DEFAULT NULL COMMENT '公告日期',
-    `end_date`                   date               DEFAULT NULL COMMENT '报告期',
+    `ann_date`                   int               DEFAULT NULL COMMENT '公告日期',
+    `end_date`                   int               DEFAULT NULL COMMENT '报告期',
     `revenue`                    double             DEFAULT NULL COMMENT '营业收入(元)',
     `operate_profit`             double             DEFAULT NULL COMMENT '营业利润(元)',
     `total_profit`               double             DEFAULT NULL COMMENT '利润总额(元)',

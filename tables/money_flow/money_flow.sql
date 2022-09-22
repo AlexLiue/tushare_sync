@@ -5,7 +5,7 @@ CREATE TABLE `money_flow`
 (
     `id`              bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`         varchar(16)        DEFAULT NULL COMMENT 'TS代码',
-    `trade_date`      date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`      int               DEFAULT NULL COMMENT '交易日期',
     `buy_sm_vol`      int                DEFAULT NULL COMMENT '小单买入量（手）',
     `buy_sm_amount`   double             DEFAULT NULL COMMENT '小单买入金额（万元）',
     `sell_sm_vol`     int                DEFAULT NULL COMMENT '小单卖出量（手）',

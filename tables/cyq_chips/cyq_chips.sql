@@ -5,7 +5,7 @@ CREATE TABLE `cyq_chips`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT '股票代码',
-    `trade_date`   date               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`   int               DEFAULT NULL COMMENT '交易日期',
     `price`        double             DEFAULT NULL COMMENT '成本价格',
     `percent`      double             DEFAULT NULL COMMENT '价格占比（%）',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
