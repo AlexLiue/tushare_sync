@@ -3,8 +3,7 @@
 DROP TABLE IF EXISTS `bak_basic`;
 CREATE TABLE `bak_basic`
 (
-    `id`                bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `trade_date`        int               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`        int                DEFAULT NULL COMMENT '交易日期',
     `ts_code`           varchar(16)        DEFAULT NULL COMMENT 'TS股票代码',
     `name`              varchar(64)        DEFAULT NULL COMMENT '股票名称',
     `industry`          varchar(32)        DEFAULT NULL COMMENT '所属行业',
@@ -20,7 +19,7 @@ CREATE TABLE `bak_basic`
     `eps`               double             DEFAULT NULL COMMENT '每股收益',
     `bvps`              double             DEFAULT NULL COMMENT '每股净资产',
     `pb`                double             DEFAULT NULL COMMENT '市净率',
-    `list_date`         int               DEFAULT NULL COMMENT '上市日期',
+    `list_date`         int                DEFAULT NULL COMMENT '上市日期',
     `undp`              double             DEFAULT NULL COMMENT '未分配利润',
     `per_undp`          double             DEFAULT NULL COMMENT '每股未分配利润',
     `rev_yoy`           double             DEFAULT NULL COMMENT '收入同比（%）',
@@ -29,6 +28,7 @@ CREATE TABLE `bak_basic`
     `npr`               double             DEFAULT NULL COMMENT '净利润率（%）',
     `holder_num`        int                DEFAULT NULL COMMENT '股东人数',
     `created_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='备用列表';
+    `updated_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='备用列表';

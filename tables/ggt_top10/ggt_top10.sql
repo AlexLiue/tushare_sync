@@ -3,8 +3,7 @@
 DROP TABLE IF EXISTS `ggt_top10`;
 CREATE TABLE `ggt_top10`
 (
-    `id`            bigint    NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `trade_date`    int               DEFAULT NULL COMMENT '交易日期',
+    `trade_date`    int                DEFAULT NULL COMMENT '交易日期',
     `ts_code`       varchar(16)        DEFAULT NULL COMMENT '股票代码',
     `name`          varchar(64)        DEFAULT NULL COMMENT '股票名称',
     `close`         double             DEFAULT NULL COMMENT '收盘价',
@@ -23,5 +22,8 @@ CREATE TABLE `ggt_top10`
     `sz_sell`       double             DEFAULT NULL COMMENT '深市卖出金额',
     `created_time`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_time`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='沪深股票-行情数据-港股通十大成交股';
+    UNIQUE KEY `daily_ts_code_idx` (`ts_code`, `trade_date`) USING BTREE,
+    UNIQUE KEY `daily_trade_date_idx` (`trade_date`, `ts_code`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-行情数据-港股通十大成交股';

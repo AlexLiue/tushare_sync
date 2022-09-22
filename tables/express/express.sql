@@ -3,10 +3,9 @@
 DROP TABLE IF EXISTS `express`;
 CREATE TABLE `express`
 (
-    `id`                         bigint    NOT NULL AUTO_INCREMENT COMMENT '沪深股票-财务数据-业绩快报',
     `ts_code`                    varchar(16)        DEFAULT NULL COMMENT 'TS股票代码',
-    `ann_date`                   int               DEFAULT NULL COMMENT '公告日期',
-    `end_date`                   int               DEFAULT NULL COMMENT '报告期',
+    `ann_date`                   int                DEFAULT NULL COMMENT '公告日期',
+    `end_date`                   int                DEFAULT NULL COMMENT '报告期',
     `revenue`                    double             DEFAULT NULL COMMENT '营业收入(元)',
     `operate_profit`             double             DEFAULT NULL COMMENT '营业利润(元)',
     `total_profit`               double             DEFAULT NULL COMMENT '利润总额(元)',
@@ -37,6 +36,7 @@ CREATE TABLE `express`
     `is_audit`                   varchar(16)        DEFAULT NULL COMMENT '是否审计： 1是 0否',
     `remark`                     text COMMENT '备注',
     `created_time`               timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time`               timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='沪深股票-财务数据-业绩快报';
+    `updated_time`               timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-财务数据-业绩快报';
