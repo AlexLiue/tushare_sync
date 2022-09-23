@@ -1,4 +1,3 @@
-
 """
 ============================
 # -*- coding: utf-8 -*-
@@ -31,7 +30,8 @@ def init():
 
     data = ts_api.namechange(ts_code='', fields=fields)
 
-    logger.info('Write [%d] records into table [stock_basic] with [%s]' % (data.last_valid_index()+1, connection.engine))
+    logger.info(
+        'Write [%d] records into table [stock_basic] with [%s]' % (data.last_valid_index() + 1, connection.engine))
     data.to_sql('name_change', connection, index=False, if_exists='append', chunksize=5000)
 
 
@@ -42,4 +42,3 @@ def append():
 
 if __name__ == '__main__':
     init()
-

@@ -21,6 +21,7 @@ import os
 import datetime
 from utils.utils import exec_mysql_script, exec_sync_without_ts_code
 
+
 # 全量初始化表数据
 def init():
     # 创建表
@@ -67,5 +68,3 @@ def append():
 
 if __name__ == '__main__':
     append()
-
-

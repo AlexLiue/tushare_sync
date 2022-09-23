@@ -17,4 +17,3 @@ df = pro.concept_detail(**{
     "name"
 ])
 print(df)
-

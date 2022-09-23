@@ -19,6 +19,7 @@ import os
 import datetime
 from utils.utils import exec_mysql_script, exec_sync_without_ts_code
 
+
 # 全量初始化表数据
 def init():
     # 创建表
@@ -64,7 +65,7 @@ def init():
         ],
         date_column='ann_date',
         start_date='20040101',
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=365,
         limit=2000,
         interval=2
@@ -112,7 +113,7 @@ def append():
         ],
         date_column='ann_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-180)).strftime('%Y%m%d')),
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=365,
         limit=2000,
         interval=2

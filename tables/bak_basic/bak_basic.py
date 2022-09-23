@@ -17,17 +17,16 @@ import time
 import datetime
 from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger
 
-
-limit = 5000 # 每次读取记录条数
-interval = 31 # 读取的时间间隔, Tushare 限制每分钟 2次 API 调用
-begin_date = '20160101' # Tushare 里数据最早开始时间
+limit = 5000  # 每次读取记录条数
+interval = 31  # 读取的时间间隔, Tushare 限制每分钟 2次 API 调用
+begin_date = '20160101'  # Tushare 里数据最早开始时间
 
 
 def exec_syn(start_date, end_date):
     # Extern Global Var
     global limit
     global interval
-    
+
     ts_api = get_tushare_api()
     connection = get_mock_connection()
     logger = get_logger('bak_basic', 'data_syn.log')
@@ -89,7 +88,6 @@ def exec_syn(start_date, end_date):
         syn_date = syn_date + datetime.timedelta(days=1)
 
 
-
 # 全量初始化表数据
 # 首先从 bak_basic 接口中查询, 权限限制每30秒查询一次, 一次查询 5000 条
 def init():
@@ -109,7 +107,6 @@ def append():
     start_date = str((now + datetime.timedelta(days=-10)).strftime('%Y%m%d'))
 
     exec_syn(start_date, end_date)
-
 
 
 if __name__ == '__main__':

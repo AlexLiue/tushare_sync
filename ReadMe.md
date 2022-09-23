@@ -1,12 +1,16 @@
 # Sync Tushare Data to MySQL - 股票数据获取
+
 - 同步 [Tushare](https://tushare.pro) 的股票交易数据到本地 MySQL 进行存储, 采用 T + 0 同步方式
 - 首先从 Tushare 拉取全量历史数据
 - 然后每日下午 从 Tushare 拉取当日增量数据
 - 数据包含: A股、港股、日线、周线、月线等
 
 ## 使用方法
+
 ### Step0: 环境准备
+
 #### Python 环境准备
+
 ```shell
 apt-get install libmysqlclient-dev
  
@@ -19,7 +23,9 @@ pip install mysqlclient
 
 
 ```
+
 #### MySQL 数据库环境准备
+
 ```sql
 CREATE DATABASE stock;
 CREATE USER 'stock'@'%' IDENTIFIED BY 'stock';
@@ -27,29 +33,35 @@ GRANT ALL PRIVILEGES ON stock.* TO 'stock'@'%' ;
 FLUSH PRIVILEGES;
 ```
 
-
 ### Step1: 修改配置文件信息(本地数据库地址信息、Tushare 账号 token)
+
 ```shell
 mv application.ini application.ini
 # 然后修改 application.ini 中的 mysql 的地址信息 和 Tushare 账号 token
 ```
 
 ### Step2: 全量初始化同步
+
 ```shell
 python data_syn.py --mode init
 ```
+
 说明1: 执行前要求 application.ini 配置中的 mysql.database 库已创建, 程序会自动在该数据库下创建数据表   
 说明2: Tushare 对不同积分的账户存在权限限制, 本程序代码要求 积分额度 2000 以上, 如不足可根据权限自行删减 [data_syn.py](data_syn.py) 中的部分表   
-说明3: 部分表数据同步存在流量限制, 全量初始化时间相对较长     
+说明3: 部分表数据同步存在流量限制, 全量初始化时间相对较长
 
 ### Step3: 每日增量拉取同步
+
 ```shell
 python data_syn.py --mode append
 ```
+
 说明1: 部分表数据量相对较小或者不具备增量同步逻辑，因此选择每日全量同步
 
 ## MySQL 结果数据示列
+
 沪深股票-行情数据-A股日线行情（daily表数据）
+
 ```text
 id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vol      |amount     |
 ---+---------+----------+------+------+------+------+---------+------+-------+---------+-----------+
@@ -64,8 +76,10 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 ```
 
 ## 已完成的同步表
+
 ### 常规处理的表
-| MySQL表名                                                             | Tushare  接口名          | 数据说明                                                                           |  
+
+| MySQL表名                                                             | Tushare 接口名          | 数据说明                                                                           |  
 |:--------------------------------------------------------------------|:----------------------|:-------------------------------------------------------------------------------|  
 | [stock_basic](tables/stock_basic/stock_basic.sql)                   | stock_basic           | [沪深股票-基础信息-股票列表](https://tushare.pro/document/2?doc_id=25) (每日全量覆盖)            |  
 | [trade_cal](tables/trade_cal/trade_cal.sql)                         | trade_cal             | [沪深股票-基础信息-交易日历](https://tushare.pro/document/2?doc_id=26) (每日全量覆盖)            |  
@@ -94,9 +108,9 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | [share_float](tables/share_float/share_float.sql)                   | share_float           | [沪深股票-市场参考数据-限售股解禁](https://tushare.pro/document/2?doc_id=160)                                                          |
 | [stk_holder_number](tables/stk_holder_number/stk_holder_number.sql) | stk_holdernumber      | [沪深股票-市场参考数据-股东人数](https://tushare.pro/document/2?doc_id=166)                                                           |
 
-
 ## 特殊处理
-| MySQL表名                                                    | Tushare  接口名    | 数据说明                                                                            |  
+
+| MySQL表名                                                    | Tushare 接口名    | 数据说明                                                                            |  
 |:-----------------------------------------------------------|:----------------|:--------------------------------------------------------------------------------|
 | [bak_basic](tables/bak_basic/bak_basic.sql)                | bak_basic       | [沪深股票-基础信息-备用列表](https://tushare.pro/document/2?doc_id=262)（受限:2/min）           |  
 | [concept](tables/concept/concept.sql)                      | concept         | [沪深股票-市场参考数据-概念股分类](https://tushare.pro/document/2?doc_id=125)（已经停止维护）          |
@@ -104,9 +118,8 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | [cyq_perf](tables/cyq_perf/cyq_perf.sql)                   | cyq_perf        | [沪深股票-特色数据-每日筹码及胜率](https://tushare.pro/document/2?doc_id=293) （受限:5/min,10/h)  |
 | [cyq_chips](tables/cyq_chips/cyq_chips.sql)                | cyq_chips       | [沪深股票-市场参考数据-每日筹码分布](https://tushare.pro/document/2?doc_id=294) (受限:5/min,10/h) |
 
-
-
 ## 主要接口函数
+
 ```python
 import datetime
 
@@ -176,8 +189,11 @@ def exec_sync_without_ts_code(table_name, api_name, fields,
         step_end = min_date(step_end + datetime.timedelta(date_step), end)
 
 ```
+
 ## 接口使用示例
-以 沪深股票-行情数据-A股日线行情（daily）为例   
+
+以 沪深股票-行情数据-A股日线行情（daily）为例
+
 ### 全量历史数据初始化
 
 ```python
@@ -214,7 +230,9 @@ def init():
         interval=0.3
     )
 ```
+
 ### 增量数据每日更新
+
 其中： start_date 可以前回溯一段时间, 防止原始数据中断或者延迟导致的数据丢失
 
 ```python
@@ -248,7 +266,9 @@ def append():
 ```
 
 ## 执行日志说明
+
 相关日志打印存储在 项目根目录/logs/data_syn.log 文件中, 日志示例
+
 ```shell
 ssh://anaconda@47.240.xxx.xxx:22/home/anaconda/anaconda3/bin/python -u /app/stock_tushare_syn/data_syn.py --mode init
 2022-09-10 09:57:57,588 - stock_basic - INFO - Execute SQL [DROP TABLE IF EXISTS `stock_basic`]
@@ -267,7 +287,6 @@ ssh://anaconda@47.240.xxx.xxx:22/home/anaconda/anaconda3/bin/python -u /app/stoc
 2022-09-10 09:58:00,967 - name_change - INFO - Query data from tushare with api[namechange], fields[ts_code,name,start_date,end_date,ann_date,change_reason]
 2022-09-10 09:58:01,700 - name_change - INFO - Write [10000] records into table [stock_basic] with [Engine(mysql://root:***@47.240.xxx.xxx:3320/stock?charset=utf8&use_unicode=1)]
 ```
-
 
 ## 其他
 

@@ -14,10 +14,10 @@
 tushare 接口说明： https://tushare.pro/document/2?doc_id=183
 """
 
-
 import os
 import datetime
 from utils.utils import exec_mysql_script, exec_sync_without_ts_code
+
 
 # 全量初始化表数据
 def init():
@@ -37,7 +37,7 @@ def init():
         ],
         date_column='trade_date',
         start_date='20070101',
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
         limit=5000,
         interval=0.2
@@ -58,7 +58,7 @@ def append():
         ],
         date_column='trade_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-10)).strftime('%Y%m%d')),
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=1,
         limit=5000,
         interval=0.2
@@ -67,4 +67,3 @@ def append():
 
 if __name__ == '__main__':
     append()
-

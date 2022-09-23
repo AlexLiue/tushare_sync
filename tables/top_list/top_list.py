@@ -1,4 +1,3 @@
-
 """
 ============================
 # -*- coding: utf-8 -*-
@@ -57,6 +56,7 @@ def init():
         interval=0.4
     )
 
+
 # 增量追加表数据
 def append():
     exec_sync_with_spec_date_column(
@@ -89,5 +89,3 @@ def append():
 
 if __name__ == '__main__':
     append()
-
-

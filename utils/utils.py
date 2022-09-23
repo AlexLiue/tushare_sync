@@ -109,17 +109,19 @@ def exec_mysql_script(script_dir):
                 file_object = open(fullname)
                 for line in file_object:
                     if not line.startswith("--") and not line.startswith('/*'):  # 处理注释
-                        str1 = str1 + ' '.join(line.strip().split())  # pymysql一次只能执行一条sql语句
+                        str1 = str1 + ' ' + ' '.join(line.strip().split())  # pymysql一次只能执行一条sql语句
                 file_object.close()  # 循环读取文件时关闭文件很重要，否则会引起bug
-    for command in str1.split(';'):
-        if command:
+    for commandSQL in str1.split(';'):
+        command = commandSQL.strip()
+        if command != '':
             try:
-                logger.info('Execute SQL [%s]' % command)
-                cursor.execute(command + ';')
+                logger.info('Execute SQL [%s]' % command.strip())
+                cursor.execute(command.strip() + ';')
                 count = count + 1
                 suc_cnt = suc_cnt + 1
             except db.DatabaseError as e:
                 print(e)
+                print(command)
                 flt_cnt = flt_cnt + 1
                 pass
     logger.info('Execute result: Total [%s], Succeed [%s] , Failed [%s] ' % (count, suc_cnt, flt_cnt))

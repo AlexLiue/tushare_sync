@@ -17,7 +17,7 @@ import os
 import datetime
 from utils.utils import exec_mysql_script, exec_sync_without_ts_code, exec_sync_with_ts_code
 
-fields=[
+fields = [
     "ts_code",
     "ann_date",
     "end_date",
@@ -201,12 +201,13 @@ def init():
         fields=fields,
         date_column='end_date',
         start_date='20040101',
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=3650,
         limit=3000,
         interval=0.2,
         ts_code_limit=100
     )
+
 
 # 增量追加表数据
 def append():
@@ -216,12 +217,13 @@ def append():
         fields=fields,
         date_column='end_date',
         start_date=str((datetime.datetime.now() + datetime.timedelta(days=-62)).strftime('%Y%m%d')),
-        end_date = str(datetime.datetime.now().strftime('%Y%m%d')),
+        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=365,
         limit=3000,
         interval=0.2,
         ts_code_limit=300
     )
+
 
 if __name__ == '__main__':
     init()
