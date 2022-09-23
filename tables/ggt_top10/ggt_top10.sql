@@ -1,5 +1,6 @@
 -- stock.ggt_top10 definition
 
+-- 原始数据存在脏数据, `ts_code`, `trade_date` 索引重复， 如 00700.HK-20161229
 DROP TABLE IF EXISTS `ggt_top10`;
 CREATE TABLE `ggt_top10`
 (
@@ -22,8 +23,8 @@ CREATE TABLE `ggt_top10`
     `sz_sell`       double             DEFAULT NULL COMMENT '深市卖出金额',
     `created_time`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_time`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    UNIQUE KEY `daily_ts_code_idx` (`ts_code`, `trade_date`) USING BTREE,
-    UNIQUE KEY `daily_trade_date_idx` (`trade_date`, `ts_code`) USING BTREE
+    KEY `daily_ts_code_idx` (`ts_code`, `trade_date`) USING BTREE,
+    KEY `daily_trade_date_idx` (`trade_date`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-行情数据-港股通十大成交股';
