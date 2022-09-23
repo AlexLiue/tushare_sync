@@ -1,6 +1,7 @@
 -- stock.daily_p definition
 
-CREATE TABLE `daily_p`
+DROP TABLE IF EXISTS `daily`;
+CREATE TABLE `daily`
 (
     `ts_code`      varchar(16)        DEFAULT NULL COMMENT '股票代码',
     `trade_date`   int                DEFAULT NULL COMMENT '交易日期',
