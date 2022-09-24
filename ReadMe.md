@@ -95,7 +95,6 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | [hsgt_top10](tables/hsgt_top10/hsgt_top10.sql)                      | hsgt_top10            | [沪深股票-行情数据-沪深股通十大成交股](https://tushare.pro/document/2?doc_id=48)                |  
 | [ggt_top10](tables/ggt_top10/ggt_top10.sql)                         | ggt_top10             | [沪深股票-行情数据-港股通十大成交股](https://tushare.pro/document/2?doc_id=49)                 |
 | [ggt_daily](tables/ggt_daily/ggt_daily.sql)                         | ggt_daily             | [沪深股票-行情数据-港股通每日成交统计](https://tushare.pro/document/2?doc_id=196)               |
-| [bak_daily](tables/bak_daily/bak_daily.sql)                         | bak_daily             | [沪深股票-行情数据-备用行情](https://tushare.pro/document/2?doc_id=255)                    |  
 | [forecast](tables/forecast/forecast.sql)                            | forecast              | [沪深股票-财务数据-业绩预告](https://tushare.pro/document/2?doc_id=45)                     |  
 | [express](tables/express/express.sql)                               | express               | [沪深股票-财务数据-业绩快报](https://tushare.pro/document/2?doc_id=46)                     |  
 | [fina_indicator](tables/fina_indicator/fina_indicator.sql)          | fina_indicator        | [沪深股票-财务数据-财务指标数据](https://tushare.pro/document/2?doc_id=79)                   |  
@@ -110,13 +109,14 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 
 ## 特殊处理
 
-| MySQL表名                                                    | Tushare 接口名    | 数据说明                                                                            |  
-|:-----------------------------------------------------------|:----------------|:--------------------------------------------------------------------------------|
-| [bak_basic](tables/bak_basic/bak_basic.sql)                | bak_basic       | [沪深股票-基础信息-备用列表](https://tushare.pro/document/2?doc_id=262)（受限:2/min）           |  
-| [concept](tables/concept/concept.sql)                      | concept         | [沪深股票-市场参考数据-概念股分类](https://tushare.pro/document/2?doc_id=125)（已经停止维护）          |
-| [concept_detail](tables/concept_detail/concept_detail.sql) | concept_detail  | [沪深股票-市场参考数据-概念股列表](https://tushare.pro/document/2?doc_id=126) （已经停止维护）         |
-| [cyq_perf](tables/cyq_perf/cyq_perf.sql)                   | cyq_perf        | [沪深股票-特色数据-每日筹码及胜率](https://tushare.pro/document/2?doc_id=293) （受限:5/min,10/h)  |
-| [cyq_chips](tables/cyq_chips/cyq_chips.sql)                | cyq_chips       | [沪深股票-市场参考数据-每日筹码分布](https://tushare.pro/document/2?doc_id=294) (受限:5/min,10/h) |
+| MySQL表名                                                            | Tushare 接口名    | 数据说明                                                                            |  
+|:-------------------------------------------------------------------|:----------------|:--------------------------------------------------------------------------------|
+| [bak_basic](tables/bak_basic/bak_basic.sql)                        | bak_basic       | [沪深股票-基础信息-备用列表](https://tushare.pro/document/2?doc_id=262)（受限:2/min）           |  
+| [concept](tables/concept/concept.sql)                              | concept         | [沪深股票-市场参考数据-概念股分类](https://tushare.pro/document/2?doc_id=125)（已经停止维护）          |
+| [concept_detail](tables/concept_detail/concept_detail.sql)         | concept_detail  | [沪深股票-市场参考数据-概念股列表](https://tushare.pro/document/2?doc_id=126) （已经停止维护）         |
+| [cyq_perf](tables/cyq_perf/cyq_perf.sql)                           | cyq_perf        | [沪深股票-特色数据-每日筹码及胜率](https://tushare.pro/document/2?doc_id=293) （受限:5/min,10/h)  |
+| [cyq_chips](tables/cyq_chips/cyq_chips.sql)                        | cyq_chips       | [沪深股票-市场参考数据-每日筹码分布](https://tushare.pro/document/2?doc_id=294) (受限:5/min,10/h) |
+| [bak_daily](tables/bak_daily/bak_daily.sql)                        | bak_daily             | [沪深股票-行情数据-备用行情](https://tushare.pro/document/2?doc_id=255)                    |  
 
 ## 主要接口函数
 

@@ -49,11 +49,10 @@ def init():
     # stk_limit.init()  # 沪深股票-行情数据-每日涨跌停价格
     # money_flow_hsgt.init()  # 沪深股票-行情数据-沪深港通资金流向
     # hsgt_top10.init()  # 沪深股票-行情数据-沪深股通十大成交股
-    ggt_top10.init()  # 沪深股票-行情数据-港股通十大成交股
-    ggt_daily.init()  # 沪深股票-行情数据-港股通每日成交统计
-    bak_daily.init()  # 沪深股票-行情数据-备用行情
-    forecast.init()  # 沪深股票-财务数据-业绩预告
-    express.init()  # 沪深股票-财务数据-业绩快报
+    # ggt_top10.init()  # 沪深股票-行情数据-港股通十大成交股
+    # ggt_daily.init()  # 沪深股票-行情数据-港股通每日成交统计
+    # forecast.init()  # 沪深股票-财务数据-业绩预告
+    # express.init()  # 沪深股票-财务数据-业绩快报
     fina_indicator.init()  # 沪深股票-财务数据-财务指标数据
     fina_mainbz.init()  # 沪深股票-财务数据-主营业务构成
     disclosure_date.init()  # 沪深股票-财务数据-财报披露计划
@@ -79,7 +78,6 @@ def append():
     hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
     ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
     ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
-    bak_daily.append()  # 沪深股票-行情数据-备用行情
     forecast.append()  # 沪深股票-财务数据-业绩预告
     express.append()  # 沪深股票-财务数据-业绩快报
     fina_indicator.append()  # 沪深股票-财务数据-财务指标数据
@@ -97,12 +95,14 @@ def init_spc():
     concept_detail.init()  # 沪深股票-市场参考数据-概念股列表 （已经停止维护）
     cyq_perf.init()  # 沪深股票-特色数据-每日筹码及胜率（受限:5/min,10/h)
     cyq_chips.init()  # 沪深股票-特色数据-每日筹码分布 (受限:5/min,10/h)
+    bak_daily.init()  # 沪深股票-行情数据-备用行情
 
 
 def append_spc():
     bak_basic.append()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
     cyq_perf.append()  # 沪深股票-特色数据-每日筹码及胜率（受限:5/min,10/h)
     cyq_chips.append()  # 沪深股票-特色数据-每日筹码分布 (受限:5/min,10/h)
+    bak_daily.append()  # 沪深股票-行情数据-备用行情( 受限:50/天)
 
 
 def use_age():
