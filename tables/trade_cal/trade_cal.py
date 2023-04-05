@@ -15,38 +15,43 @@ tushare 接口说明： https://tushare.pro/document/2?doc_id=26
 import datetime
 import os
 
-from utils.utils import exec_create_table_script, get_tushare_api, get_mock_connection, get_logger
+from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column, get_cfg, query_last_sync_date, \
+    max_date
 
 
-def init(drop_exist):
+def exec_sync(start_date, end_date):
+    exec_sync_with_spec_date_column(
+        table_name='trade_cal',
+        api_name='trade_cal',
+        fields=[
+            "exchange",
+            "cal_date",
+            "is_open",
+            "pretrade_date"
+        ],
+        date_column='cal_date',
+        start_date=start_date,
+        end_date=end_date,
+        limit=10000,
+        interval=0.4)
+
+
+# 全量初始化表数据
+def sync(drop_exist):
+    # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_create_table_script(dir_path, drop_exist)
 
-    start = 19700101
-    now = datetime.datetime.now()
-    end = now.strftime('%Y%m%d')
-    sync(start, end, 'append')
+    # 查询历史最大同步日期
+    begin_date = '19901221'
+    cfg = get_cfg()
+    date_query_sql = "select max(cal_date) date from %s.trade_cal" % cfg['mysql']['database']
+    last_date = query_last_sync_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
+
+    exec_sync(start_date, end_date)
 
 
-def append():
-    now = datetime.datetime.now()
-    start = now.strftime('%Y%m%d')
-    end = start
-    sync(start, end, 'append')
-
-
-# 数据同步,  start-数据开始日期, end-数据结束日期
-def sync(start, end, if_exists):
-    ts_api = get_tushare_api()
-    connection = get_mock_connection()
-    logger = get_logger('trade_cal', 'data_syn.log')
-
-    api_name = 'trade_cal'
-    fields = 'exchange,cal_date,is_open,pretrade_date'
-
-    logger.info("Query data from tushare with api[%s], start[%s]- end[%s], fields[%s]" % (api_name, start, end, fields))
-    data = ts_api.query(api_name, fields, start_date=start, end_date=end)
-
-    logger.info(
-        'Write [%d] records into table [trade_cal] with [%s]' % (data.last_valid_index() + 1, connection.engine))
-    data.to_sql('trade_cal', connection, index=False, if_exists=if_exists, chunksize=5000)
+if __name__ == '__main__':
+    sync(True)

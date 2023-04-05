@@ -24,6 +24,7 @@ limit = 1000
 interval = 0.4
 date_step = 1
 
+
 def exec_sync(start_date, end_date):
     global limit
     global interval

@@ -15,10 +15,8 @@
 """
 import datetime
 import os
-import time
+from utils.utils import exec_create_table_script, exec_sync_with_ts_code
 
-from utils.utils import exec_create_table_script, get_tushare_api, get_mock_connection, get_logger, \
-    exec_sync_with_ts_code
 
 
 # 全量初始化表数据

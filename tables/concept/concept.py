@@ -43,5 +43,6 @@ def sync(drop_exist=True):
     logger.info('Write [%d] records into table [%s] with [%s]' % (size, 'concept', connection.engine))
     data.to_sql('concept', connection, index=False, if_exists='append', chunksize=5000)
 
+
 if __name__ == '__main__':
     sync(False)

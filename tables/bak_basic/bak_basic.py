@@ -13,7 +13,6 @@ tushare 接口说明： https://tushare.pro/document/2?doc_id=262
 """
 
 import os
-import time
 import datetime
 from utils.utils import exec_create_table_script, query_last_sync_date, \
     max_date, exec_sync_with_spec_date_column, get_cfg

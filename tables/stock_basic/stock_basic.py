@@ -13,11 +13,12 @@ tushare 接口说明： https://tushare.pro/document/2?doc_id=25
 """
 
 import os
+
 from utils.utils import exec_create_table_script, get_tushare_api, get_mock_connection, get_logger
 
 
 # 全量初始化表数据
-def init(drop_exist):
+def sync(drop_exist):
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_create_table_script(dir_path, drop_exist)
 
@@ -38,5 +39,5 @@ def init(drop_exist):
 
 
 # 增量追加表数据, 股票列表不具备增量条件, 全量覆盖
-def append():
-    init(drop_exist=True)
+if __name__ == '__main__':
+    sync(True)

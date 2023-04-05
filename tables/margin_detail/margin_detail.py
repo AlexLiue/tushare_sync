@@ -23,68 +23,53 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=59
 
 """
 
-import os
 import datetime
-from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column
+import os
+
+from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column, get_cfg, query_last_sync_date, \
+    max_date
+
+
+def exec_sync(start_date, end_date):
+    exec_sync_with_spec_date_column(
+        table_name='margin_detail',
+        api_name='margin_detail',
+        fields=[
+            "trade_date",
+            "ts_code",
+            "rzye",
+            "rqye",
+            "rzmre",
+            "rqyl",
+            "rzche",
+            "rqchl",
+            "rqmcl",
+            "rzrqye",
+            "name"
+        ],
+        date_column='trade_date',
+        start_date=start_date,
+        end_date=end_date,
+        limit=3000,
+        interval=0.2)
 
 
 # 全量初始化表数据
-def init(drop_exist):
+def sync(drop_exist):
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_create_table_script(dir_path, drop_exist)
 
-    exec_sync_with_spec_date_column(
-        table_name='margin_detail',
-        api_name='margin_detail',
-        fields=[
-            "trade_date",
-            "ts_code",
-            "rzye",
-            "rqye",
-            "rzmre",
-            "rqyl",
-            "rzche",
-            "rqchl",
-            "rqmcl",
-            "rzrqye",
-            "name"
-        ],
-        date_column='trade_date',
-        start_date='20100101',
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=31,
-        limit=3000,
-        interval=0.2
-    )
+    # 查询历史最大同步日期
+    begin_date = '20100101'
+    cfg = get_cfg()
+    date_query_sql = "select max(trade_date) date from %s.margin_detail" % cfg['mysql']['database']
+    last_date = query_last_sync_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
 
-
-# 增量追加表数据
-def append():
-    exec_sync_with_spec_date_column(
-        table_name='margin_detail',
-        api_name='margin_detail',
-        fields=[
-            "trade_date",
-            "ts_code",
-            "rzye",
-            "rqye",
-            "rzmre",
-            "rqyl",
-            "rzche",
-            "rqchl",
-            "rqmcl",
-            "rzrqye",
-            "name"
-        ],
-        date_column='trade_date',
-        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-31)).strftime('%Y%m%d')),
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=1,
-        limit=3000,
-        interval=0.2
-    )
+    exec_sync(start_date, end_date)
 
 
 if __name__ == '__main__':
-    init()
+    sync(True)

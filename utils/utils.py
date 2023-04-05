@@ -7,14 +7,14 @@
 
 import configparser
 import datetime
+import logging
 import os
+import time
 
 import pandas as pd
 import pymysql
 import tushare as ts
 from sqlalchemy import create_engine
-import logging
-import time
 
 
 # 加载配置信息函数
@@ -173,8 +173,6 @@ def query_last_sync_date(sql):
     logger.info("Query last sync date with sql [%s], result: [%s]" % (sql, result))
     return result
 
-
-
 # 获取两个日期的最小值
 def min_date(date1, date2):
     if date1 <= date2:
@@ -188,31 +186,6 @@ def max_date(date1, date2):
         return date1
     else:
         return date2
-
-
-# def exec_sync(table_name, api_name, fields, date_column, start_date, end_date, date_step,
-#               limit, interval, ts_code_mode, ts_code_limit):
-#     """
-#     执行数据同步并存储
-#     :param table_name: 表名
-#     :param api_name: API 名
-#     :param fields: 字段列表
-#     :param date_column: 增量时间字段列
-#     :param start_date: 开始时间
-#     :param end_date: 结束时间
-#     :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
-#     :param limit: 每次查询的记录条数
-#     :param interval: 每次查询的时间间隔
-#     :param ts_code_mode: 是否股票代码是否必须为非空, 如果为 true 则需要先查询股票代码, 获取参数
-#     :param ts_code_limit: 每次同步的 ts_code 的记录数据
-#     :return: None
-#     """
-#     if ts_code_mode == 'false' or ts_code_mode == '':
-#         exec_sync_with_spec_date_column(table_name, api_name, fields,
-#                                   date_column, start_date, end_date, date_step, limit, interval)
-#     else:
-#         exec_sync_with_ts_code(table_name, api_name, fields,
-#                                date_column, start_date, end_date, date_step, limit, interval, ts_code_limit)
 
 
 def get_ts_code_list(interval, ts_code_limit):
@@ -330,93 +303,6 @@ def exec_sync_with_ts_code(table_name, api_name, fields, date_column, start_date
                 raise e
         max_retry += 1
 
-#
-# # fields 字段列表
-# def exec_sync_with_spec_date_column(table_name, api_name, fields,
-#                               date_column, start_date, end_date, date_step, limit, interval):
-#     """
-#     执行数据同步并存储
-#     :param table_name: 表名
-#     :param api_name: API 名
-#     :param fields: 字段列表
-#     :param date_column: 增量时间字段列
-#     :param start_date: 开始时间
-#     :param end_date: 结束时间
-#     :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
-#     :param limit: 每次查询的记录条数
-#     :param interval: 每次查询的时间间隔
-#     :return: None
-#     """
-#
-#     # 创建 API / Connection / Logger 对象
-#     ts_api = get_tushare_api()
-#     connection = get_mock_connection()
-#     logger = get_logger(table_name, 'data_syn.log')
-#
-#     cfg = get_cfg()
-#     database_name = cfg['mysql']['database']
-#
-#     max_retry = 3
-#     cur_retry = 0
-#     while True:
-#         try:
-#             # 清理历史数据
-#             clean_sql = "DELETE FROM %s.%s WHERE %s>='%s' AND %s<='%s'" % \
-#                         (database_name, table_name, date_column, start_date, date_column, end_date)
-#             logger.info('Execute Clean SQL [%s]' % clean_sql)
-#             counts = exec_mysql_sql(clean_sql)
-#             logger.info("Execute Clean SQL Affect [%d] records" % counts)
-#
-#             # 数据同步时间开始时间和结束时间, 包含前后边界
-#             start = datetime.datetime.strptime(start_date, '%Y%m%d')
-#             end = datetime.datetime.strptime(end_date, '%Y%m%d')
-#
-#             step_start = start  # 微批开始时间
-#             step_end = min_date(start + datetime.timedelta(date_step - 1), end)  # 微批结束时间
-#
-#             while step_start <= end:
-#                 start_date = str(step_start.strftime('%Y%m%d'))
-#                 end_date = str(step_end.strftime('%Y%m%d'))
-#                 offset = 0
-#                 while True:
-#                     logger.info("Query [%s] from tushare with api[%s] start_date[%s] end_date[%s]"
-#                                 " from offset[%d] limit[%d]" % (
-#                                     table_name, api_name, start_date, end_date, offset, limit))
-#
-#                     data = ts_api.query(api_name,
-#                                         **{
-#                                             # "trade_date": start_date,
-#                                             "start_date": start_date,
-#                                             "end_date": end_date,
-#                                             "offset": offset,
-#                                             "limit": limit
-#                                         },
-#                                         fields=fields)
-#                     time.sleep(interval)
-#                     if data.last_valid_index() is not None:
-#                         size = data.last_valid_index() + 1
-#                         logger.info(
-#                             'Write [%d] records into table [%s] with [%s]' % (size, table_name, connection.engine))
-#                         data.to_sql(table_name, connection, index=False, if_exists='append', chunksize=limit)
-#                         offset = offset + size
-#                         if size < limit:
-#                             break
-#                     else:
-#                         break
-#                 # 更新下一次微批时间段
-#                 step_start = step_start + datetime.timedelta(date_step)
-#                 step_end = min_date(step_end + datetime.timedelta(date_step), end)
-#             break
-#         except Exception as e:
-#             if cur_retry < max_retry:
-#                 logger.error("Get Exception[%s]" % e.__cause__)
-#                 logger.error("Get Exception[%s]" % e.with_traceback())
-#                 time.sleep(3)
-#             else:
-#                 raise e
-#
-#         cur_retry += 1
-
 
 # fields 字段列表
 #
@@ -470,6 +356,8 @@ def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
                     data = ts_api.query(api_name,
                                         **{
                                             date_column: step_date,
+                                            "start_date": step_date,
+                                            "end_date": step_date,
                                             "offset": offset,
                                             "limit": limit
                                         },
@@ -499,15 +387,6 @@ def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
 
 
 if __name__ == '__main__':
-    # dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data_syn', 'trade_cal')
-    # exec_create_table_script(dir_path)
-
-    # query_sql = "select max(cal_date) date from tushare.trade_cal"
-    # r = query_last_syn_date(query_sql)
-
-    # table = "trade_cal"
-    # r = query_table_is_exist(table)
-    # print(r)
 
     ts_codes_1 = get_ts_code_list(0.3, 1000)
 

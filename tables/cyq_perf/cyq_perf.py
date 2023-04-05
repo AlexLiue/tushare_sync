@@ -45,7 +45,6 @@ def init(drop_exist):
         date_column='trade_date',
         start_date='20050101',
         end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=10,
         limit=5000,
         interval=13
     )
