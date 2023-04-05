@@ -37,7 +37,7 @@ def sync(drop_exist=True):
             "in_date",
             "out_date"
         ],
-        date_column='end_date',
+        date_column='ann_date',
         start_date=19970101,
         end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
         date_step=36000,

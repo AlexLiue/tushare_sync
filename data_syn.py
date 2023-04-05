@@ -88,12 +88,12 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     mode = args.mode
-    drop_exist = args.drop_exist
-    print('Args: --mode [%s] --drop-exist [%s]' % (mode, drop_exist))
+    dropExist = args.drop_exist
+    print('Args: --mode [%s] --drop_exist [%s]' % (mode, dropExist))
 
     if mode == 'normal':
-        sync(drop_exist)
+        sync(dropExist)
     elif mode == 'special':
-        sync_spc(drop_exist)
+        sync_spc(dropExist)
     else:
         use_age()

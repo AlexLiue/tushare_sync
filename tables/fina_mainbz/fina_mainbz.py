@@ -34,7 +34,7 @@ def exec_sync(start_date, end_date):
             "bz_code",
             "update_flag"
         ],
-        date_column='end_date',
+        date_column='ann_date',
         start_date=start_date,
         end_date=end_date,
         date_step=365,
@@ -53,7 +53,7 @@ def sync(drop_exist):
     # 查询历史最大同步日期
     begin_date = '20040101'
     cfg = get_cfg()
-    date_query_sql = "select max(end_date) date from %s.fina_mainbz" % cfg['mysql']['database']
+    date_query_sql = "select max(ann_date) date from %s.fina_mainbz" % cfg['mysql']['database']
     last_date = query_last_sync_date(date_query_sql)
     start_date = max_date(last_date, begin_date)
     end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
