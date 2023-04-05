@@ -138,84 +138,37 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 | [cyq_chips](tables/cyq_chips/cyq_chips.sql)                | cyq_chips      | [沪深股票-市场参考数据-每日筹码分布](https://tushare.pro/document/2?doc_id=294) (受限:5/min,10/h) |
 | [bak_daily](tables/bak_daily/bak_daily.sql)                | bak_daily      | [沪深股票-行情数据-备用行情](https://tushare.pro/document/2?doc_id=255)                     |  
 
-## 主要接口函数
+## 主要接口函数示范
 
+### 基于交易日期-进行数据同步接口
+以 沪深股票-行情数据-A股日线行情（daily）为例
 ```python
-
-import datetime
-
-import time
-from utils.utils import get_tushare_api, get_mock_connection, get_logger, exec_mysql_sql, min_date
-
-
-def exec_sync_without_ts_code(table_name, api_name, fields,
-                              date_column, start_date, end_date, date_step, limit, interval):
-    """
-    执行数据同步并存储
-    :param table_name: 表名
-    :param api_name: API 名
-    :param fields: 字段列表
-    :param date_column: 增量时间字段列
-    :param start_date: 开始时间
-    :param end_date: 结束时间
-    :param date_step: 分段查询间隔, 由于 Tushare 分页查询存在性能瓶颈, 因此采用按时间分段拆分微批查询
-    :param limit: 每次查询的记录条数
-    :param interval: 每次查询的时间间隔
-    :return: None
-    """
-    # 创建 API / Connection / Logger 对象
-    ts_api = get_tushare_api()
-    connection = get_mock_connection()
-    logger = get_logger(table_name, 'data_syn.log')
-
-    # 清理历史数据
-    clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" %
-    (table_name, date_column, start_date, date_column, end_date)
-    logger.info('Execute Clean SQL [%s]' % clean_sql)
-    exec_mysql_sql(clean_sql)
-
-    # 数据同步时间开始时间和结束时间, 包含前后边界
-    start = datetime.datetime.strptime(start_date, '%Y%m%d')
-    end = datetime.datetime.strptime(end_date, '%Y%m%d')
-
-    step_start = start  # 微批开始时间
-    step_end = min_date(start + datetime.timedelta(date_step - 1), end)  # 微批结束时间
-
-    while step_start <= end:
-        start_date = str(step_start.strftime('%Y%m%d'))
-        end_date = str(step_end.strftime('%Y%m%d'))
-        offset = 0
-        while True:
-            logger.info("Query [%s] from tushare with api[%s] start_date[%s] end_date[%s]"
-                        " from offset[%d] limit[%d]" % (table_name, api_name, start_date, end_date, offset, limit))
-
-            data = ts_api.query(api_name,
-                                **{
-                                    "start_date": start_date,
-                                    "end_date": end_date,
-                                    "offset": offset,
-                                    "limit": limit
-                                },
-                                fields=fields)
-            time.sleep(interval)
-            if data.last_valid_index() is not None:
-                size = data.last_valid_index() + 1
-                logger.info('Write [%d] records into table [%s] with [%s]' % (size, table_name, connection.engine))
-                data.to_sql(table_name, connection, index=False, if_exists='append', chunksize=limit)
-                offset = offset + size
-                if size < limit:
-                    break
-            else:
-                break
-        # 更新下一次微批时间段
-        step_start = step_start + datetime.timedelta(date_step)
-        step_end = min_date(step_end + datetime.timedelta(date_step), end)
-
+from utils.utils import  exec_sync_with_spec_date_column
+def exec_sync(start_date, end_date):
+    exec_sync_with_spec_date_column(
+        table_name='daily',
+        api_name='daily',
+        fields=[
+            "ts_code",
+            "trade_date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "pre_close",
+            "change",
+            "pct_chg",
+            "vol",
+            "amount"
+        ],
+        date_column='trade_date',
+        start_date=start_date,
+        end_date=end_date,
+        limit=5000,
+        interval=0.3)
 ```
 
-## 接口使用示例
-
-### 基于交易日期进行数据同步接口示范
+### 基于股票代码-进行数据同步接口
 以 沪深股票-基础信息-管理层薪酬和持股（stk_rewards）为例
 ```python
 from utils.utils import exec_sync_with_ts_code
