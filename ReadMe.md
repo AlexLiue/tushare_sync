@@ -29,6 +29,7 @@ pip install mysqlclient
 ##### 创建数据库
 
 ```
+docker network create --subnet=192.168.20.0/24 --gateway=192.168.20.1 docker_bridge
 mkdir -p /Users/alex/Apps/Dockers/mysql/mysql_tushare/var/lib/mysql
 mkdir -p /Users/alex/Apps/Dockers/mysql/mysql_tushare/etc/mysql/conf.d
 docker run -itd --name mysql_tushare \
@@ -39,8 +40,9 @@ docker run -itd --name mysql_tushare \
   -e MYSQL_DATABASE=tushare \
   -e MYSQL_USER=tushare \
   -e MYSQL_PASSWORD=tushare \
+  --net docker_bridge \
+  --ip 192.168.20.10 \
    mysql:8.0.32
-
 ```
 
 ##### 创建用户
@@ -219,7 +221,7 @@ def exec_sync_without_ts_code(table_name, api_name, fields,
 ### 全量历史数据初始化
 
 ```python
-from utils.utils import exec_mysql_script, exec_sync_without_ts_code
+from utils.utils import exec_create_table_script, exec_sync_without_ts_code
 import os
 import datetime
 
@@ -227,7 +229,7 @@ import datetime
 def init():
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_mysql_script(dir_path)
+    exec_create_table_script(dir_path)
 
     exec_sync_without_ts_code(
         table_name='daily',

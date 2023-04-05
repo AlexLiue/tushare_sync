@@ -15,12 +15,12 @@ tushare 接口说明： https://tushare.pro/document/2?doc_id=26
 import datetime
 import os
 
-from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger
+from utils.utils import exec_create_table_script, get_tushare_api, get_mock_connection, get_logger
 
 
-def init():
+def init(drop_exist):
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_mysql_script(dir_path)
+    exec_create_table_script(dir_path, drop_exist)
 
     start = 19700101
     now = datetime.datetime.now()

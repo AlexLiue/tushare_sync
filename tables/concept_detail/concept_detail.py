@@ -17,14 +17,14 @@
 import os
 import time
 
-from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger
+from utils.utils import exec_create_table_script, get_tushare_api, get_mock_connection, get_logger
 
 
 # 全量初始化表数据
-def init():
+def init(drop_exist):
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_mysql_script(dir_path)
+    exec_create_table_script(dir_path, drop_exist)
 
     # 创建 API / Connection / Logger 对象
     ts_api = get_tushare_api()

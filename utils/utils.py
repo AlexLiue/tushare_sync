@@ -91,49 +91,92 @@ def exec_mysql_sql(sql):
     return counts
 
 
-# 执行 SQL 脚本
-def exec_mysql_script(script_dir):
-    cfg = get_cfg()
-    logger = get_logger(str(script_dir).split('/')[-1], cfg['logging']['filename'])
-    db = get_mysql_connection()
-    cursor = db.cursor()
-    count = 0
-    flt_cnt = 0
-    suc_cnt = 0
-    str1 = ''
-    for home, dirs, files in os.walk(script_dir):
-        for filename in files:
-            if filename.endswith('.sql'):
-                dirname = os.path.dirname(os.path.abspath(__file__))
-                fullname = os.path.join(dirname, script_dir, filename)
-                file_object = open(fullname)
-                for line in file_object:
-                    if not line.startswith("--") and not line.startswith('/*'):  # 处理注释
-                        str1 = str1 + ' ' + ' '.join(line.strip().split())  # pymysql一次只能执行一条sql语句
-                file_object.close()  # 循环读取文件时关闭文件很重要，否则会引起bug
-    for commandSQL in str1.split(';'):
-        command = commandSQL.strip()
-        if command != '':
-            try:
-                logger.info('Execute SQL [%s]' % command.strip())
-                cursor.execute(command.strip() + ';')
-                count = count + 1
-                suc_cnt = suc_cnt + 1
-            except db.DatabaseError as e:
-                print(e)
-                print(command)
-                flt_cnt = flt_cnt + 1
-                pass
-    logger.info('Execute result: Total [%s], Succeed [%s] , Failed [%s] ' % (count, suc_cnt, flt_cnt))
+def exec_create_table_script(script_dir, drop_exist):
+    """
+    执行 SQL 脚本
+    :param script_dir: 脚本路径
+    :param drop_exist: 如果表存在是否先 Drop 后再重建
+    :return:
+    """
+    table_name = str(script_dir).split('/')[-1]
+    table_exist = query_table_is_exist(table_name)
+    if (not table_exist) | (table_exist & drop_exist):
+        cfg = get_cfg()
+        logger = get_logger(table_name, cfg['logging']['filename'])
+        db = get_mysql_connection()
+        cursor = db.cursor()
+        count = 0
+        flt_cnt = 0
+        suc_cnt = 0
+        str1 = ''
+        for home, dirs, files in os.walk(script_dir):
+            for filename in files:
+                if filename.endswith('.sql'):
+                    dir_name = os.path.dirname(os.path.abspath(__file__))
+                    full_name = os.path.join(dir_name, script_dir, filename)
+                    file_object = open(full_name)
+                    for line in file_object:
+                        if not line.startswith("--") and not line.startswith('/*'):  # 处理注释
+                            str1 = str1 + ' ' + ' '.join(line.strip().split())  # pymysql一次只能执行一条sql语句
+                    file_object.close()  # 循环读取文件时关闭文件很重要，否则会引起bug
+        for commandSQL in str1.split(';'):
+            command = commandSQL.strip()
+            if command != '':
+                try:
+                    logger.info('Execute SQL [%s]' % command.strip())
+                    cursor.execute(command.strip() + ';')
+                    count = count + 1
+                    suc_cnt = suc_cnt + 1
+                except db.DatabaseError as e:
+                    print(e)
+                    print(command)
+                    flt_cnt = flt_cnt + 1
+                    pass
+        logger.info('Execute result: Total [%s], Succeed [%s] , Failed [%s] ' % (count, suc_cnt, flt_cnt))
+        cursor.close()
+        db.close()
+        if flt_cnt > 0:
+            raise Exception('Execute SQL script [%s] failed. ' % script_dir)
+
+
+def query_table_is_exist(table_name):
+    sql = "SELECT count(1) from information_schema.TABLES t WHERE t.TABLE_NAME ='%s'" % table_name
+    conn = get_mysql_connection()
+    cursor = conn.cursor()
+    cursor.execute(sql + ';')
+    count = cursor.fetchall()[0][0]
+    if int(count) > 0:
+        return True
+    else:
+        return False
+
+
+def query_last_syn_date(sql):
+    """
+    查询历史同步数据的最大日期
+    :param sql: 执行查询的SQL
+    :return: 查询结果
+    """
+    conn = get_mysql_connection()
+    cursor = conn.cursor()
+    cursor.execute(sql + ';')
+    result = cursor.fetchall()
     cursor.close()
-    db.close()
-    if flt_cnt > 0:
-        raise Exception('Execute SQL script [%s] failed. ' % script_dir)
+    conn.close()
+    last_date = result[0][0]
+    return str(last_date)
 
 
 # 获取两个日期的最小值
 def min_date(date1, date2):
     if date1 <= date2:
+        return date1
+    else:
+        return date2
+
+
+def max_date(date1, date2):
+    if date1 >= date2:
         return date1
     else:
         return date2
@@ -171,12 +214,15 @@ def exec_sync_with_ts_code(table_name, api_name, fields, date_column, start_date
     connection = get_mock_connection()
     logger = get_logger(table_name, 'data_syn.log')
 
+    cfg = get_cfg()
+    database_name = cfg['mysql']['database']
+
     max_retry = 0
     while max_retry < 3:
         try:
             # 清理历史数据
-            clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
-                        (table_name, date_column, start_date, date_column, end_date)
+            clean_sql = "DELETE FROM %s.%s WHERE %s>='%s' AND %s<='%s'" % \
+                        (database_name, table_name, date_column, start_date, date_column, end_date)
             logger.info('Execute Clean SQL [%s]' % clean_sql)
             counts = exec_mysql_sql(clean_sql)
             logger.info("Execute Clean SQL Affect [%d] records" % counts)
@@ -272,12 +318,16 @@ def exec_sync_without_ts_code(table_name, api_name, fields,
     connection = get_mock_connection()
     logger = get_logger(table_name, 'data_syn.log')
 
-    max_retry = 0
-    while max_retry < 3:
+    cfg = get_cfg()
+    database_name = cfg['mysql']['database']
+
+    max_retry = 3
+    cur_retry = 0
+    while True:
         try:
             # 清理历史数据
-            clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
-                        (table_name, date_column, start_date, date_column, end_date)
+            clean_sql = "DELETE FROM %s.%s WHERE %s>='%s' AND %s<='%s'" % \
+                        (database_name, table_name, date_column, start_date, date_column, end_date)
             logger.info('Execute Clean SQL [%s]' % clean_sql)
             counts = exec_mysql_sql(clean_sql)
             logger.info("Execute Clean SQL Affect [%d] records" % counts)
@@ -322,9 +372,14 @@ def exec_sync_without_ts_code(table_name, api_name, fields,
                 step_end = min_date(step_end + datetime.timedelta(date_step), end)
             break
         except Exception as e:
-            logger.error("Get Exception[%s]" % e.__cause__)
-            time.sleep(3)
-        max_retry += 1
+            if cur_retry < max_retry:
+                logger.error("Get Exception[%s]" % e.__cause__)
+                logger.error("Get Exception[%s]" % e.with_traceback())
+                time.sleep(3)
+            else:
+                raise e
+
+        cur_retry += 1
 
 
 # fields 字段列表
@@ -349,12 +404,15 @@ def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
     connection = get_mock_connection()
     logger = get_logger(table_name, 'data_syn.log')
 
+    cfg = get_cfg()
+    database_name = cfg['mysql']['database']
+
     max_retry = 0
     while max_retry < 3:
         try:
             # 清理历史数据
-            clean_sql = "DELETE FROM %s WHERE %s>='%s' AND %s<='%s'" % \
-                        (table_name, date_column, start_date, date_column, end_date)
+            clean_sql = "DELETE FROM %s.%s WHERE %s>='%s' AND %s<='%s'" % \
+                        (database_name, table_name, date_column, start_date, date_column, end_date)
             logger.info('Execute Clean SQL [%s]' % clean_sql)
             counts = exec_mysql_sql(clean_sql)
             logger.info("Execute Clean SQL Affect [%d] records" % counts)
@@ -400,5 +458,12 @@ def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
 
 
 if __name__ == '__main__':
-    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data_syn', 'trade_cal')
-    exec_mysql_script(dir_path)
+    # dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data_syn', 'trade_cal')
+    # exec_create_table_script(dir_path)
+
+    # query_sql = "select max(cal_date) date from tushare.trade_cal"
+    # r = query_last_syn_date(query_sql)
+
+    table = "trade_cal"
+    r = query_table_is_exist(table)
+    print(r)

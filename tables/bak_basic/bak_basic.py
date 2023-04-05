@@ -15,7 +15,8 @@ tushare 接口说明： https://tushare.pro/document/2?doc_id=262
 import os
 import time
 import datetime
-from utils.utils import exec_mysql_script, get_tushare_api, get_mock_connection, get_logger
+from utils.utils import exec_create_table_script, get_tushare_api, get_mock_connection, get_logger, query_last_syn_date, \
+    max_date
 
 limit = 5000  # 每次读取记录条数
 interval = 31  # 读取的时间间隔, Tushare 限制每分钟 2次 API 调用
@@ -90,24 +91,29 @@ def exec_syn(start_date, end_date):
 
 # 全量初始化表数据
 # 首先从 bak_basic 接口中查询, 权限限制每30秒查询一次, 一次查询 5000 条
-def init():
+def init(drop_exist):
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_mysql_script(dir_path)
+    exec_create_table_script(dir_path, drop_exist)
 
     global begin_date
     now = datetime.datetime.now()
     end_date = str(now.strftime('%Y%m%d'))
-    exec_syn(begin_date, end_date)
+
+    # 查询历史最大同步日期
+    date_query_sql = "select max(cal_date) date from tushare.bak_basic"
+    last_date = query_last_syn_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    exec_syn(start_date, end_date)
 
 
 # 增量追加表数据
 def append():
     now = datetime.datetime.now()
     end_date = str(now.strftime('%Y%m%d'))
-    start_date = str((now + datetime.timedelta(days=-10)).strftime('%Y%m%d'))
 
+    date_query_sql = "select max(cal_date) date from tushare.bak_basic"
+    start_date = query_last_syn_date(date_query_sql)
     exec_syn(start_date, end_date)
-
 
 if __name__ == '__main__':
     append()

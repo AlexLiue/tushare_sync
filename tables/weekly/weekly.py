@@ -15,14 +15,14 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=144
 
 import os
 import datetime
-from utils.utils import exec_mysql_script, exec_sync_without_ts_code
+from utils.utils import exec_create_table_script, exec_sync_without_ts_code
 
 
 # 全量初始化表数据
-def init():
+def init(drop_exist):
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_mysql_script(dir_path)
+    exec_create_table_script(dir_path, drop_exist)
 
     exec_sync_without_ts_code(
         table_name='weekly',

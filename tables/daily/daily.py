@@ -16,15 +16,19 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=27
 
 import os
 import datetime
-from utils.utils import exec_mysql_script, exec_sync_without_ts_code
+from utils.utils import exec_create_table_script, exec_sync_without_ts_code, query_last_syn_date, max_date
 
 
-# 全量初始化表数据
-def init():
-    # 创建表
-    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_mysql_script(dir_path)
+begin_date = "19901219"
+limit = 5000
+interval = 0.3
+date_step = 1
 
+
+def exec_syn(start_date, end_date):
+    global limit
+    global interval
+    global date_step
     exec_sync_without_ts_code(
         table_name='daily',
         api_name='daily',
@@ -42,39 +46,39 @@ def init():
             "amount"
         ],
         date_column='trade_date',
-        start_date='19901219',
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=1,
-        limit=5000,
-        interval=0.3
-    )
+        start_date=start_date,
+        end_date=end_date,
+        date_step=date_step,
+        limit=limit,
+        interval=interval)
+
+
+# 全量初始化表数据
+def init(drop_exist):
+    # 创建表
+    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+    exec_create_table_script(dir_path, drop_exist)
+
+    # 查询历史最大同步日期
+    global begin_date
+    date_query_sql = "select max(trade_date) date from tushare.daily"
+    last_date = query_last_syn_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
+
+    exec_syn(start_date, end_date)
 
 
 # 增量追加表数据
 def append():
-    exec_sync_without_ts_code(
-        table_name='daily',
-        api_name='daily',
-        fields=[
-            "ts_code",
-            "trade_date",
-            "open",
-            "high",
-            "low",
-            "close",
-            "pre_close",
-            "change",
-            "pct_chg",
-            "vol",
-            "amount"
-        ],
-        date_column='trade_date',
-        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-7)).strftime('%Y%m%d')),
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=1,
-        limit=5000,
-        interval=0.3
-    )
+    # 查询历史最大同步日期
+    global begin_date
+    date_query_sql = "select max(trade_date) date from tushare.daily"
+    last_date = query_last_syn_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
+
+    exec_syn(start_date, end_date)
 
 
 if __name__ == '__main__':
