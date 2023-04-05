@@ -15,12 +15,12 @@ tushare 接口说明： https://tushare.pro/document/2?doc_id=26
 import datetime
 import os
 
-from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column, get_cfg, query_last_sync_date, \
+from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column_v2, get_cfg, query_last_sync_date, \
     max_date
 
 
 def exec_sync(start_date, end_date):
-    exec_sync_with_spec_date_column(
+    exec_sync_with_spec_date_column_v2(
         table_name='trade_cal',
         api_name='trade_cal',
         fields=[
@@ -33,7 +33,8 @@ def exec_sync(start_date, end_date):
         start_date=start_date,
         end_date=end_date,
         limit=10000,
-        interval=0.4)
+        interval=0.4,
+        date_step=3600)
 
 
 # 全量初始化表数据
@@ -54,4 +55,4 @@ def sync(drop_exist):
 
 
 if __name__ == '__main__':
-    sync(True)
+    sync(False)
