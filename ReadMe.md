@@ -61,24 +61,22 @@ mv application.ini application.ini
 # 然后修改 application.ini 中的 mysql 的地址信息 和 Tushare 账号 token
 ```
 
-### Step2: 全量初始化同步
+### Step2: 执行同步
 
 ```shell
-python data_syn.py --mode init [--drop_exist]
+## 无调用限制表同步
+python data_syn.py --mode normal [--drop_exist]
+
+## 特殊异常表同步
+python data_syn.py --mode special [--drop_exist]
 ```
 
 说明1: 执行前要求 application.ini 配置中的 mysql.database 库已创建, 程序会自动在该数据库下创建数据表   
 说明2: Tushare 对不同积分的账户存在权限限制, 本程序代码要求 积分额度 2000 以上,
 如不足可根据权限自行删减 [data_syn.py](data_syn.py) 中的部分表   
 说明3: 部分表数据同步存在流量限制, 全量初始化时间相对较长
-
-### Step3: 每日增量拉取同步
-
-```shell
-python data_syn.py --mode append
-```
-
-说明1: 部分表数据量相对较小或者不具备增量同步逻辑，因此选择每日全量同步
+说明4：同步先查询本地数据库的最后同步日期,然后基于历史同步日期,续日同步
+说明5: 部分表数据量相对较小或者不具备增量同步逻辑，因此选择每日全量同步
 
 ## MySQL 结果数据示列
 
@@ -143,6 +141,7 @@ id |ts_code  |trade_date|open  |high  |low   |close |pre_close|change|pct_chg|vo
 ## 主要接口函数
 
 ```python
+
 import datetime
 
 import time
@@ -216,77 +215,30 @@ def exec_sync_without_ts_code(table_name, api_name, fields,
 
 ## 接口使用示例
 
-以 沪深股票-行情数据-A股日线行情（daily）为例
-
-### 全量历史数据初始化
-
+### 基于交易日期进行数据同步接口示范
+以 沪深股票-基础信息-管理层薪酬和持股（stk_rewards）为例
 ```python
-from utils.utils import exec_create_table_script, exec_sync_without_ts_code
-import os
-import datetime
-
-
-def init():
-    # 创建表
-    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_create_table_script(dir_path)
-
-    exec_sync_without_ts_code(
-        table_name='daily',
-        api_name='daily',
+from utils.utils import exec_sync_with_ts_code
+def exec_sync(start_date, end_date):
+    exec_sync_with_ts_code(
+        table_name='stk_rewards',
+        api_name='stk_rewards',
         fields=[
             "ts_code",
-            "trade_date",
-            "open",
-            "high",
-            "low",
-            "close",
-            "pre_close",
-            "change",
-            "pct_chg",
-            "vol",
-            "amount"
+            "ann_date",
+            "end_date",
+            "name",
+            "title",
+            "reward",
+            "hold_vol"
         ],
-        start_date='19901219',
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
+        date_column='end_date',
+        start_date=start_date,
+        end_date=end_date,
         date_step=1,
         limit=5000,
-        interval=0.3
-    )
-```
-
-### 增量数据每日更新
-
-其中： start_date 可以前回溯一段时间, 防止原始数据中断或者延迟导致的数据丢失
-
-```python
-from utils.utils import exec_sync_without_ts_code
-import datetime
-
-
-def append():
-    exec_sync_without_ts_code(
-        table_name='daily',
-        api_name='daily',
-        fields=[
-            "ts_code",
-            "trade_date",
-            "open",
-            "high",
-            "low",
-            "close",
-            "pre_close",
-            "change",
-            "pct_chg",
-            "vol",
-            "amount"
-        ],
-        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-7)).strftime('%Y%m%d')),
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=1,
-        limit=5000,
-        interval=0.3
-    )
+        interval=0.3,
+        ts_code_limit=1000)
 ```
 
 ## 执行日志说明

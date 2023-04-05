@@ -173,6 +173,7 @@ def query_last_sync_date(sql):
     logger.info("Query last sync date with sql [%s], result: [%s]" % (sql, result))
     return result
 
+
 # 获取两个日期的最小值
 def min_date(date1, date2):
     if date1 <= date2:

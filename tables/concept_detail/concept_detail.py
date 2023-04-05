@@ -18,7 +18,6 @@ import os
 from utils.utils import exec_create_table_script, exec_sync_with_ts_code
 
 
-
 # 全量初始化表数据
 def sync(drop_exist=True):
     # 创建表
