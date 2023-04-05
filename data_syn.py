@@ -37,73 +37,39 @@ from tables.weekly import weekly
 
 
 # 全量历史初始化
-def init(drop_exist):
-    # stock_basic.init(drop_exist)  # 沪深股票-基础信息-股票列表
-    # trade_cal.init(drop_exist)  # 沪深股票-基础信息-交易日历
-    # name_change.init(drop_exist)  # 沪深股票-基础信息-股票曾用名
-    # hs_const.init(drop_exist)  # 沪深股票-基础信息-沪深股通成份股
-    # stk_rewards.init(drop_exist)  # 沪深股票-基础信息-管理层薪酬和持股
-    # daily.init(drop_exist)  # 沪深股票-行情数据-A股日线行情
-    weekly.init(drop_exist)  # 沪深股票-行情数据-A股周线行情
-    monthly.init(drop_exist)  # 沪深股票-行情数据-A股月线行情
-    money_flow.init(drop_exist)  # 沪深股票-行情数据-个股资金流向
-    stk_limit.init(drop_exist)  # 沪深股票-行情数据-每日涨跌停价格
-    money_flow_hsgt.init(drop_exist)  # 沪深股票-行情数据-沪深港通资金流向
-    hsgt_top10.init(drop_exist)  # 沪深股票-行情数据-沪深股通十大成交股
-    ggt_top10.init(drop_exist)  # 沪深股票-行情数据-港股通十大成交股
-    ggt_daily.init(drop_exist)  # 沪深股票-行情数据-港股通每日成交统计
-    forecast.init(drop_exist)  # 沪深股票-财务数据-业绩预告
-    express.init(drop_exist)  # 沪深股票-财务数据-业绩快报
-    fina_indicator.init(drop_exist)  # 沪深股票-财务数据-财务指标数据
-    fina_mainbz.init(drop_exist)  # 沪深股票-财务数据-主营业务构成
-    disclosure_date.init(drop_exist)  # 沪深股票-财务数据-财报披露计划
-    margin_detail.init(drop_exist)  # 沪深股票-市场参考数据-融资融券交易明细
-    top_list.init(drop_exist)  # 沪深股票-市场参考数据-龙虎榜每日明细
-    top_inst.init(drop_exist)  # 沪深股票-市场参考数据-龙虎榜机构明细
-    stk_holder_number.init(drop_exist)  # 沪深股票-市场参考数据-股东人数
+def sync(drop_exist):
+    stock_basic.sync(drop_exist)  # 沪深股票-基础信息-股票列表
+    trade_cal.sync(drop_exist)  # 沪深股票-基础信息-交易日历
+    name_change.sync(drop_exist)  # 沪深股票-基础信息-股票曾用名
+    hs_const.sync(drop_exist)  # 沪深股票-基础信息-沪深股通成份股
+    stk_rewards.sync(drop_exist)  # 沪深股票-基础信息-管理层薪酬和持股
+    daily.sync(drop_exist)  # 沪深股票-行情数据-A股日线行情
+    weekly.sync(drop_exist)  # 沪深股票-行情数据-A股周线行情
+    monthly.sync(drop_exist)  # 沪深股票-行情数据-A股月线行情
+    money_flow.sync(drop_exist)  # 沪深股票-行情数据-个股资金流向
+    stk_limit.sync(drop_exist)  # 沪深股票-行情数据-每日涨跌停价格
+    money_flow_hsgt.sync(drop_exist)  # 沪深股票-行情数据-沪深港通资金流向
+    hsgt_top10.sync(drop_exist)  # 沪深股票-行情数据-沪深股通十大成交股
+    ggt_top10.sync(drop_exist)  # 沪深股票-行情数据-港股通十大成交股
+    ggt_daily.sync(drop_exist)  # 沪深股票-行情数据-港股通每日成交统计
+    forecast.sync(drop_exist)  # 沪深股票-财务数据-业绩预告
+    express.sync(drop_exist)  # 沪深股票-财务数据-业绩快报
+    fina_indicator.sync(drop_exist)  # 沪深股票-财务数据-财务指标数据
+    fina_mainbz.sync(drop_exist)  # 沪深股票-财务数据-主营业务构成
+    disclosure_date.sync(drop_exist)  # 沪深股票-财务数据-财报披露计划
+    margin_detail.sync(drop_exist)  # 沪深股票-市场参考数据-融资融券交易明细
+    top_list.sync(drop_exist)  # 沪深股票-市场参考数据-龙虎榜每日明细
+    top_inst.sync(drop_exist)  # 沪深股票-市场参考数据-龙虎榜机构明细
+    stk_holder_number.sync(drop_exist)  # 沪深股票-市场参考数据-股东人数
 
 
-# 增量数据追加同步
-def append():
-    stock_basic.append()  # 沪深股票-基础信息-股票列表
-    trade_cal.append()  # 沪深股票-基础信息-交易日历
-    name_change.append()  # 沪深股票-基础信息-股票曾用名
-    hs_const.append()  # 沪深股票-基础信息-沪深股通成份股
-    stk_rewards.append()  # 沪深股票-基础信息-管理层薪酬和持股
-    daily.append()  # 沪深股票-行情数据-A股日线行情
-    weekly.append()  # 沪深股票-行情数据-A股周线行情
-    monthly.append()  # 沪深股票-行情数据-A股月线行情
-    money_flow.append()  # 沪深股票-行情数据-个股资金流向
-    stk_limit.append()  # 沪深股票-行情数据-每日涨跌停价格
-    money_flow_hsgt.append()  # 沪深股票-行情数据-沪深港通资金流向
-    hsgt_top10.append()  # 沪深股票-行情数据-沪深股通十大成交股
-    ggt_top10.append()  # 沪深股票-行情数据-港股通十大成交股
-    ggt_daily.append()  # 沪深股票-行情数据-港股通每日成交统计
-    forecast.append()  # 沪深股票-财务数据-业绩预告
-    express.append()  # 沪深股票-财务数据-业绩快报
-    fina_indicator.append()  # 沪深股票-财务数据-财务指标数据
-    fina_mainbz.append()  # 沪深股票-财务数据-主营业务构成
-    disclosure_date.append()  # 沪深股票-财务数据-财报披露计划
-    margin_detail.append()  # 沪深股票-市场参考数据-融资融券交易明细
-    top_list.append()  # 沪深股票-市场参考数据-龙虎榜每日明细
-    top_inst.append()  # 沪深股票-市场参考数据-龙虎榜机构明细
-    stk_holder_number.append()  # 沪深股票-市场参考数据-股东人数
-
-
-def init_spc():
-    bak_basic.init(drop_exist)  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
-    concept.init(drop_exist)  # 沪深股票-市场参考数据-概念股分类（已经停止维护）
-    concept_detail.init(drop_exist)  # 沪深股票-市场参考数据-概念股列表 （已经停止维护）
-    cyq_perf.init(drop_exist)  # 沪深股票-特色数据-每日筹码及胜率（受限:5/min,10/h)
-    cyq_chips.init(drop_exist)  # 沪深股票-特色数据-每日筹码分布 (受限:5/min,10/h)
-    bak_daily.init(drop_exist)  # 沪深股票-行情数据-备用行情
-
-
-def append_spc():
-    bak_basic.append()  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
-    cyq_perf.append()  # 沪深股票-特色数据-每日筹码及胜率（受限:5/min,10/h)
-    cyq_chips.append()  # 沪深股票-特色数据-每日筹码分布 (受限:5/min,10/h)
-    bak_daily.append()  # 沪深股票-行情数据-备用行情( 受限:50/天)
+def sync_spc(drop_exist):
+    bak_basic.sync(drop_exist)  # 沪深股票-基础信息-备用列表 （读取限制,每分钟调用2次, 每天最多访问该接口20次）
+    concept.sync(drop_exist)  # 沪深股票-市场参考数据-概念股分类（已经停止维护）
+    concept_detail.sync(drop_exist)  # 沪深股票-市场参考数据-概念股列表 （已经停止维护）
+    cyq_perf.sync(drop_exist)  # 沪深股票-特色数据-每日筹码及胜率（受限:5/min,10/h)
+    cyq_chips.sync(drop_exist)  # 沪深股票-特色数据-每日筹码分布 (受限:5/min,10/h)
+    bak_daily.sync(drop_exist)  # 沪深股票-行情数据-备用行情
 
 
 def use_age():
@@ -113,27 +79,21 @@ def use_age():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='sync mode args')
 
-    parser.add_argument('--mode', required=True, choices=['init', 'append', 'init_spc', 'append_spc'],
+    parser.add_argument('--mode', required=True, choices=['normal', 'special'],
                         type=str, default='',
-                        help='同步模式: init(初始化模式),'
-                             ' append(增量追加模式),'
-                             ' init_spc(初始化特殊处理模式),'
-                             ' append_spc(特殊处理增量追加模式)')
+                        help='同步模式: normal(同步常规表),'
+                             ' special(同步特殊表)')
     parser.add_argument('--drop_exist', action='store_true',
                         help='初始化建表过程如果表已存在 Drop 后再建')
 
     args = parser.parse_args()
     mode = args.mode
     drop_exist = args.drop_exist
-    print('Args: --mode [%s] --drop_exist [%s]' % (mode, drop_exist))
+    print('Args: --mode [%s] --drop-exist [%s]' % (mode, drop_exist))
 
-    if mode == 'init':
-        init(drop_exist)
-    elif mode == 'append':
-        append()
-    elif mode == init_spc:
-        init_spc()
-    elif mode == 'append_spc':
-        append_spc()
+    if mode == 'normal':
+        sync(drop_exist)
+    elif mode == 'special':
+        sync_spc(drop_exist)
     else:
         use_age()
