@@ -11,7 +11,9 @@ CREATE TABLE `share_float`
     `holder_name`  varchar(64)        DEFAULT NULL COMMENT '股东名称',
     `share_type`   varchar(32)        DEFAULT NULL COMMENT '股份类型',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `share_float_ts_code` (`ts_code`, `ann_date`) USING BTREE,
+     KEY `share_float_ann_date` (`ann_date`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-市场参考数据-限售股解禁';

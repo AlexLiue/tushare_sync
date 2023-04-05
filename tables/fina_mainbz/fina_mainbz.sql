@@ -13,7 +13,9 @@ CREATE TABLE `fina_mainbz`
     `curr_type`    varchar(16)        DEFAULT NULL COMMENT '货币代码',
     `update_flag`  varchar(2)         DEFAULT NULL COMMENT '是否更新',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `fina_mainbz_ts_code` (`ts_code`, `end_date`) USING BTREE,
+     KEY `fina_mainbz_end_date` (`end_date`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-财务数据-主营业务构成';

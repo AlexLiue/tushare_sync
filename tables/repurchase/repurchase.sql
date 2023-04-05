@@ -15,7 +15,9 @@ CREATE TABLE `repurchase`
     `repo_goal`    varchar(64)        DEFAULT NULL COMMENT '回购目的',
     `update_flag`  varchar(2)         DEFAULT NULL COMMENT '更新标识',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `repurchase_ts_code` (`ts_code`, `ann_date`) USING BTREE,
+     KEY `repurchase_ann_date` (`ann_date`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-市场参考数据-股票回购';

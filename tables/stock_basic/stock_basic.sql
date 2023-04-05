@@ -20,7 +20,9 @@ CREATE TABLE `stock_basic`
     `delist_date`  int                DEFAULT NULL COMMENT ' 退市日期 ',
     `is_hs`        varchar(32)        DEFAULT NULL COMMENT ' 是否沪深港通标:N否 H沪股通 S深股通 ',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `stock_basic_ts_code` (`ts_code`, `symbol`) USING BTREE,
+     KEY `stock_basic_symbol` (`symbol`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='基础信息';

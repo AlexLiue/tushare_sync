@@ -1,9 +1,9 @@
 [mysql]
-host=mysql
-user=root
-password=alex
+host=localhost
+user=tushare
+password=tushare
 port=3306
-database=stock
+database=tushare
 
 
 [tushare]

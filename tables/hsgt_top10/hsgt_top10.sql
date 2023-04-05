@@ -15,7 +15,9 @@ CREATE TABLE `hsgt_top10`
     `buy`          double             DEFAULT NULL COMMENT '买入金额',
     `sell`         double             DEFAULT NULL COMMENT '卖出金额',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `hsgt_top10_ts_code` (`ts_code`, `trade_date`) USING BTREE,
+     KEY `hsgt_top10_trade_date` (`trade_date`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-行情数据-沪深股通十大成交股';

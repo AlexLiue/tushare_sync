@@ -15,7 +15,9 @@ CREATE TABLE `cyq_perf`
     `weight_avg`   double             DEFAULT NULL COMMENT '加权平均成本',
     `winner_rate`  double             DEFAULT NULL COMMENT '胜率',
     `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `cyq_perf_ts_code` (`ts_code`, `trade_date`) USING BTREE,
+     KEY `cyq_perf_trade_date` (`trade_date`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-特色数据-每日筹码及胜率';

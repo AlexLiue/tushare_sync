@@ -4,55 +4,56 @@
 """
 
 import argparse
-from tables.stock_basic import stock_basic
-from tables.trade_cal import trade_cal
-from tables.name_change import name_change
-from tables.hs_const import hs_const
-from tables.stk_rewards import stk_rewards
+
 from tables.bak_basic import bak_basic
-from tables.daily import daily
-from tables.weekly import weekly
-from tables.monthly import monthly
-from tables.money_flow import money_flow
-from tables.stk_limit import stk_limit
-from tables.money_flow_hsgt import money_flow_hsgt
-from tables.hsgt_top10 import hsgt_top10
-from tables.ggt_top10 import ggt_top10
-from tables.ggt_daily import ggt_daily
 from tables.bak_daily import bak_daily
-from tables.forecast import forecast
+from tables.concept import concept
+from tables.concept_detail import concept_detail
+from tables.cyq_chips import cyq_chips
+from tables.cyq_perf import cyq_perf
+from tables.daily import daily
+from tables.disclosure_date import disclosure_date
 from tables.express import express
 from tables.fina_indicator import fina_indicator
 from tables.fina_mainbz import fina_mainbz
-from tables.disclosure_date import disclosure_date
+from tables.forecast import forecast
+from tables.ggt_daily import ggt_daily
+from tables.ggt_top10 import ggt_top10
+from tables.hs_const import hs_const
+from tables.hsgt_top10 import hsgt_top10
 from tables.margin_detail import margin_detail
-from tables.top_list import top_list
-from tables.top_inst import top_inst
-from tables.concept import concept
-from tables.concept_detail import concept_detail
+from tables.money_flow import money_flow
+from tables.money_flow_hsgt import money_flow_hsgt
+from tables.monthly import monthly
+from tables.name_change import name_change
 from tables.stk_holder_number import stk_holder_number
-from tables.cyq_perf import cyq_perf
-from tables.cyq_chips import cyq_chips
+from tables.stk_limit import stk_limit
+from tables.stk_rewards import stk_rewards
+from tables.stock_basic import stock_basic
+from tables.top_inst import top_inst
+from tables.top_list import top_list
+from tables.trade_cal import trade_cal
+from tables.weekly import weekly
 
 
 # 全量历史初始化
 def init():
-    # stock_basic.init()  # 沪深股票-基础信息-股票列表
-    # trade_cal.init()  # 沪深股票-基础信息-交易日历
-    # name_change.init()  # 沪深股票-基础信息-股票曾用名
-    # hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
-    # stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
-    # daily.init()  # 沪深股票-行情数据-A股日线行情
-    # weekly.init()  # 沪深股票-行情数据-A股周线行情
-    # monthly.init()  # 沪深股票-行情数据-A股月线行情
-    # money_flow.init()  # 沪深股票-行情数据-个股资金流向
-    # stk_limit.init()  # 沪深股票-行情数据-每日涨跌停价格
-    # money_flow_hsgt.init()  # 沪深股票-行情数据-沪深港通资金流向
-    # hsgt_top10.init()  # 沪深股票-行情数据-沪深股通十大成交股
-    # ggt_top10.init()  # 沪深股票-行情数据-港股通十大成交股
-    # ggt_daily.init()  # 沪深股票-行情数据-港股通每日成交统计
-    # forecast.init()  # 沪深股票-财务数据-业绩预告
-    # express.init()  # 沪深股票-财务数据-业绩快报
+    stock_basic.init()  # 沪深股票-基础信息-股票列表
+    trade_cal.init()  # 沪深股票-基础信息-交易日历
+    name_change.init()  # 沪深股票-基础信息-股票曾用名
+    hs_const.init()  # 沪深股票-基础信息-沪深股通成份股
+    stk_rewards.init()  # 沪深股票-基础信息-管理层薪酬和持股
+    daily.init()  # 沪深股票-行情数据-A股日线行情
+    weekly.init()  # 沪深股票-行情数据-A股周线行情
+    monthly.init()  # 沪深股票-行情数据-A股月线行情
+    money_flow.init()  # 沪深股票-行情数据-个股资金流向
+    stk_limit.init()  # 沪深股票-行情数据-每日涨跌停价格
+    money_flow_hsgt.init()  # 沪深股票-行情数据-沪深港通资金流向
+    hsgt_top10.init()  # 沪深股票-行情数据-沪深股通十大成交股
+    ggt_top10.init()  # 沪深股票-行情数据-港股通十大成交股
+    ggt_daily.init()  # 沪深股票-行情数据-港股通每日成交统计
+    forecast.init()  # 沪深股票-财务数据-业绩预告
+    express.init()  # 沪深股票-财务数据-业绩快报
     fina_indicator.init()  # 沪深股票-财务数据-财务指标数据
     fina_mainbz.init()  # 沪深股票-财务数据-主营业务构成
     disclosure_date.init()  # 沪深股票-财务数据-财报披露计划

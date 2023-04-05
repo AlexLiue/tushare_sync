@@ -17,7 +17,9 @@ CREATE TABLE `forecast`
     `summary`         text COMMENT '业绩预告摘要',
     `change_reason`   text COMMENT '业绩变动原因',
     `created_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `forecast_ts_code` (`ts_code`, `ann_date`) USING BTREE,
+     KEY `forecast_ann_date` (`ann_date`, `ts_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='沪深股票-财务数据-业绩预告';

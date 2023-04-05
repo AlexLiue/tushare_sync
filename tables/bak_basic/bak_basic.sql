@@ -28,7 +28,9 @@ CREATE TABLE `bak_basic`
     `npr`               double             DEFAULT NULL COMMENT '净利润率（%）',
     `holder_num`        int                DEFAULT NULL COMMENT '股东人数',
     `created_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间'
+    `updated_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+     KEY `bak_basic_trade_date` (`trade_date`, `ts_code`) USING BTREE,
+     KEY `bak_basic_ts_code` (`ts_code`, `trade_date`) USING BTREE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
+  DEFAULT CHARSET = utf8mb4Ò
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='备用列表';
