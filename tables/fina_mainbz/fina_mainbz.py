@@ -15,51 +15,28 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=79
 
 import os
 import datetime
-from utils.utils import exec_create_table_script, exec_sync_with_ts_code
 
-fields = [
-    "ts_code",
-    "end_date",
-    "bz_item",
-    "bz_sales",
-    "bz_profit",
-    "bz_cost",
-    "curr_type",
-    "bz_code",
-    "update_flag"
-]
+from utils.utils import exec_create_table_script, query_last_sync_date, max_date, get_cfg, exec_sync_with_ts_code
 
 
-# 全量初始化表数据
-def init(drop_exist):
-    # 创建表
-    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    exec_create_table_script(dir_path, drop_exist)
-
-    global fields
+def exec_sync(start_date, end_date):
     exec_sync_with_ts_code(
         table_name='fina_mainbz',
         api_name='fina_mainbz',
-        fields=fields,
+        fields=[
+            "ts_code",
+            "end_date",
+            "bz_item",
+            "bz_sales",
+            "bz_profit",
+            "bz_cost",
+            "curr_type",
+            "bz_code",
+            "update_flag"
+        ],
         date_column='end_date',
-        start_date='20040101',
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=3650,
-        limit=1000,
-        interval=1.1,
-        ts_code_limit=1
-    )
-
-
-# 增量追加表数据
-def append():
-    exec_sync_with_ts_code(
-        table_name='fina_mainbz',
-        api_name='fina_mainbz',
-        fields=fields,
-        date_column='end_date',
-        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-62)).strftime('%Y%m%d')),
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
+        start_date=start_date,
+        end_date=end_date,
         date_step=365,
         limit=1000,
         interval=1.1,
@@ -67,5 +44,22 @@ def append():
     )
 
 
+# 全量初始化表数据
+def sync(drop_exist):
+    # 创建表
+    dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+    exec_create_table_script(dir_path, drop_exist)
+
+    # 查询历史最大同步日期
+    begin_date = '20040101'
+    cfg = get_cfg()
+    date_query_sql = "select max(end_date) date from %s.fina_mainbz" % cfg['mysql']['database']
+    last_date = query_last_sync_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
+
+    exec_sync(start_date, end_date)
+
+
 if __name__ == '__main__':
-    init()
+    sync(False)

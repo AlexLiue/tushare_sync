@@ -12,68 +12,53 @@
 tushare 接口说明：https://tushare.pro/document/2?doc_id=48
 """
 
+
 import os
 import datetime
-from utils.utils import exec_create_table_script, exec_sync_without_ts_code
+from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column, get_cfg, query_last_sync_date, \
+    max_date
+
+
+def exec_sync(start_date, end_date):
+    exec_sync_with_spec_date_column(
+        table_name='hsgt_top10',
+        api_name='hsgt_top10',
+        fields=[
+            "trade_date",
+            "ts_code",
+            "name",
+            "close",
+            "change",
+            "rank",
+            "market_type",
+            "amount",
+            "net_amount",
+            "buy",
+            "sell"
+        ],
+        date_column='trade_date',
+        start_date=start_date,
+        end_date=end_date,
+        limit=5000,
+        interval=0.2)
 
 
 # 全量初始化表数据
-def init(drop_exist):
+def sync(drop_exist):
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_create_table_script(dir_path, drop_exist)
 
-    exec_sync_without_ts_code(
-        table_name='hsgt_top10',
-        api_name='hsgt_top10',
-        fields=[
-            "trade_date",
-            "ts_code",
-            "name",
-            "close",
-            "change",
-            "rank",
-            "market_type",
-            "amount",
-            "net_amount",
-            "buy",
-            "sell"
-        ],
-        date_column='trade_date',
-        start_date='20100101',
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=365,
-        limit=5000,
-        interval=0.2
-    )
+    # 查询历史最大同步日期
+    begin_date = '20100101'
+    cfg = get_cfg()
+    date_query_sql = "select max(trade_date) date from %s.hsgt_top10" % cfg['mysql']['database']
+    last_date = query_last_sync_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
 
-
-# 增量追加表数据
-def append():
-    exec_sync_without_ts_code(
-        table_name='hsgt_top10',
-        api_name='hsgt_top10',
-        fields=[
-            "trade_date",
-            "ts_code",
-            "name",
-            "close",
-            "change",
-            "rank",
-            "market_type",
-            "amount",
-            "net_amount",
-            "buy",
-            "sell"
-        ],
-        date_column='trade_date',
-        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-30)).strftime('%Y%m%d')),
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=365,
-        limit=5000,
-        interval=0.2
-    )
+    exec_sync(start_date, end_date)
 
 
 if __name__ == '__main__':
-    append()
+    sync(True)

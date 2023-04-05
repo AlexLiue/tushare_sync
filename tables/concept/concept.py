@@ -19,11 +19,10 @@ from utils.utils import exec_create_table_script, get_tushare_api, get_mock_conn
 
 
 # 全量初始化表数据
-def init(drop_exist):
+def sync(drop_exist=True):
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-    if drop_exist:
-        exec_create_table_script(dir_path)
+    exec_create_table_script(dir_path, True)
 
     # 创建 API / Connection / Logger 对象
     ts_api = get_tushare_api()
@@ -40,13 +39,9 @@ def init(drop_exist):
         "name",
         "src"
     ])
-    print(data)
-
     size = data.last_valid_index() + 1
     logger.info('Write [%d] records into table [%s] with [%s]' % (size, 'concept', connection.engine))
-
     data.to_sql('concept', connection, index=False, if_exists='append', chunksize=5000)
 
-
 if __name__ == '__main__':
-    init()
+    sync(False)

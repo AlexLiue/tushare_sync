@@ -38,12 +38,12 @@ from tables.weekly import weekly
 
 # 全量历史初始化
 def init(drop_exist):
-    stock_basic.init(drop_exist)  # 沪深股票-基础信息-股票列表
-    trade_cal.init(drop_exist)  # 沪深股票-基础信息-交易日历
-    name_change.init(drop_exist)  # 沪深股票-基础信息-股票曾用名
-    hs_const.init(drop_exist)  # 沪深股票-基础信息-沪深股通成份股
-    stk_rewards.init(drop_exist)  # 沪深股票-基础信息-管理层薪酬和持股
-    daily.init(drop_exist)  # 沪深股票-行情数据-A股日线行情
+    # stock_basic.init(drop_exist)  # 沪深股票-基础信息-股票列表
+    # trade_cal.init(drop_exist)  # 沪深股票-基础信息-交易日历
+    # name_change.init(drop_exist)  # 沪深股票-基础信息-股票曾用名
+    # hs_const.init(drop_exist)  # 沪深股票-基础信息-沪深股通成份股
+    # stk_rewards.init(drop_exist)  # 沪深股票-基础信息-管理层薪酬和持股
+    # daily.init(drop_exist)  # 沪深股票-行情数据-A股日线行情
     weekly.init(drop_exist)  # 沪深股票-行情数据-A股周线行情
     monthly.init(drop_exist)  # 沪深股票-行情数据-A股月线行情
     money_flow.init(drop_exist)  # 沪深股票-行情数据-个股资金流向
@@ -107,7 +107,7 @@ def append_spc():
 
 
 def use_age():
-    print('Useage: python data_syn.py --mode [init | append | init_spc | append_spc]')
+    print('Useage: python data_syn.py --mode [init | append | init_spc | append_spc] [--drop_exist]')
 
 
 if __name__ == '__main__':

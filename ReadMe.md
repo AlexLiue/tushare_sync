@@ -64,7 +64,7 @@ mv application.ini application.ini
 ### Step2: 全量初始化同步
 
 ```shell
-python data_syn.py --mode init
+python data_syn.py --mode init [--drop_exist]
 ```
 
 说明1: 执行前要求 application.ini 配置中的 mysql.database 库已创建, 程序会自动在该数据库下创建数据表   

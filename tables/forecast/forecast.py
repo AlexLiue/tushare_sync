@@ -17,70 +17,52 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=45
 
 import os
 import datetime
-from utils.utils import exec_create_table_script, exec_sync_without_ts_code
+from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column, get_cfg, query_last_sync_date, \
+    max_date
+
+
+def exec_sync(start_date, end_date):
+    exec_sync_with_spec_date_column(
+        table_name='forecast',
+        api_name='forecast',
+        fields=[
+            "ts_code",
+            "ann_date",
+            "end_date",
+            "type",
+            "p_change_min",
+            "p_change_max",
+            "net_profit_min",
+            "net_profit_max",
+            "last_parent_net",
+            "first_ann_date",
+            "summary",
+            "change_reason",
+            "notice_times"
+        ],
+        date_column='ann_date',
+        start_date=start_date,
+        end_date=end_date,
+        limit=3500,
+        interval=2)
 
 
 # 全量初始化表数据
-def init(drop_exist):
+def sync(drop_exist):
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_create_table_script(dir_path, drop_exist)
 
-    exec_sync_without_ts_code(
-        table_name='forecast',
-        api_name='forecast',
-        fields=[
-            "ts_code",
-            "ann_date",
-            "end_date",
-            "type",
-            "p_change_min",
-            "p_change_max",
-            "net_profit_min",
-            "net_profit_max",
-            "last_parent_net",
-            "first_ann_date",
-            "summary",
-            "change_reason",
-            "notice_times"
-        ],
-        date_column='ann_date',
-        start_date='19980101',
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=365,
-        limit=3500,
-        interval=2
-    )
+    # 查询历史最大同步日期
+    begin_date = '19980405'
+    cfg = get_cfg()
+    date_query_sql = "select max(ann_date) date from %s.forecast" % cfg['mysql']['database']
+    last_date = query_last_sync_date(date_query_sql)
+    start_date = max_date(last_date, begin_date)
+    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
 
-
-# 增量追加表数据
-def append():
-    exec_sync_without_ts_code(
-        table_name='forecast',
-        api_name='forecast',
-        fields=[
-            "ts_code",
-            "ann_date",
-            "end_date",
-            "type",
-            "p_change_min",
-            "p_change_max",
-            "net_profit_min",
-            "net_profit_max",
-            "last_parent_net",
-            "first_ann_date",
-            "summary",
-            "change_reason",
-            "notice_times"
-        ],
-        date_column='ann_date',
-        start_date=str((datetime.datetime.now() + datetime.timedelta(days=-180)).strftime('%Y%m%d')),
-        end_date=str(datetime.datetime.now().strftime('%Y%m%d')),
-        date_step=365,
-        limit=3500,
-        interval=2
-    )
+    exec_sync(start_date, end_date)
 
 
 if __name__ == '__main__':
-    append()
+    sync(True)

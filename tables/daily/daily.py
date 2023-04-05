@@ -16,8 +16,8 @@ tushare 接口说明：https://tushare.pro/document/2?doc_id=27
 
 import os
 import datetime
-from utils.utils import exec_create_table_script, exec_sync_without_ts_code, query_last_syn_date, max_date
-
+from utils.utils import exec_create_table_script, exec_sync_with_spec_date_column, query_last_sync_date, max_date, \
+    get_cfg
 
 begin_date = "19901219"
 limit = 5000
@@ -25,11 +25,11 @@ interval = 0.3
 date_step = 1
 
 
-def exec_syn(start_date, end_date):
+def exec_sync(start_date, end_date):
     global limit
     global interval
     global date_step
-    exec_sync_without_ts_code(
+    exec_sync_with_spec_date_column(
         table_name='daily',
         api_name='daily',
         fields=[
@@ -48,38 +48,26 @@ def exec_syn(start_date, end_date):
         date_column='trade_date',
         start_date=start_date,
         end_date=end_date,
-        date_step=date_step,
         limit=limit,
         interval=interval)
 
 
 # 全量初始化表数据
-def init(drop_exist):
+def sync(drop_exist):
     # 创建表
     dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
     exec_create_table_script(dir_path, drop_exist)
 
     # 查询历史最大同步日期
     global begin_date
-    date_query_sql = "select max(trade_date) date from tushare.daily"
-    last_date = query_last_syn_date(date_query_sql)
+    cfg = get_cfg()
+    date_query_sql = "select max(trade_date) date from %s.daily" % cfg['mysql']['database']
+    last_date = query_last_sync_date(date_query_sql)
     start_date = max_date(last_date, begin_date)
     end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
 
-    exec_syn(start_date, end_date)
-
-
-# 增量追加表数据
-def append():
-    # 查询历史最大同步日期
-    global begin_date
-    date_query_sql = "select max(trade_date) date from tushare.daily"
-    last_date = query_last_syn_date(date_query_sql)
-    start_date = max_date(last_date, begin_date)
-    end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
-
-    exec_syn(start_date, end_date)
+    exec_sync(start_date, end_date)
 
 
 if __name__ == '__main__':
-    append()
+    sync(False)
