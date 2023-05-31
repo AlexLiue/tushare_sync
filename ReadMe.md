@@ -43,6 +43,9 @@ docker run -itd --name mysql_tushare \
   --net docker_bridge \
   --ip 192.168.20.10 \
    mysql:8.0.32
+
+# Other  
+docker run -itd --name mysql_tushare   -p3310:3306   -v /Users/alex/Apps/Dockers/mysql/mysql_tushare/var/lib/mysql:/var/lib/mysql   -v /Users/alex/Apps/Dockers/mysql/mysql_tushare/etc/mysql/conf.d:/etc/mysql/conf.d   -e MYSQL_ROOT_PASSWORD=tushare_root   -e MYSQL_DATABASE=tushare   -e MYSQL_USER=tushare   -e MYSQL_PASSWORD=tushare mysql
 ```
 
 ##### 创建用户
