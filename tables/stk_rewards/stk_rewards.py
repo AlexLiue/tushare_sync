@@ -33,7 +33,7 @@ def exec_sync(start_date, end_date):
             "reward",
             "hold_vol"
         ],
-        date_column='ann_date',
+        date_column='end_date',
         start_date=start_date,
         end_date=end_date,
         date_step=1,
@@ -49,9 +49,9 @@ def sync(drop_exist):
     exec_create_table_script(dir_path, drop_exist)
 
     # 查询历史最大同步日期
-    begin_date = '19940803'
+    begin_date = '20100101'
     cfg = get_cfg()
-    date_query_sql = "select max(ann_date) date from %s.stk_rewards" % cfg['mysql']['database']
+    date_query_sql = "select max(end_date) date from %s.stk_rewards" % cfg['mysql']['database']
     last_date = query_last_sync_date(date_query_sql)
     start_date = max_date(last_date, begin_date)
     end_date = str(datetime.datetime.now().strftime('%Y%m%d'))
@@ -60,4 +60,4 @@ def sync(drop_exist):
 
 
 if __name__ == '__main__':
-    sync(True)
+    sync(False)

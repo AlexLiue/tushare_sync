@@ -51,7 +51,7 @@ def sync(drop_exist):
     exec_create_table_script(dir_path, drop_exist)
 
     # 查询历史最大同步日期
-    begin_date = '20040101'
+    begin_date = '20000101'
     cfg = get_cfg()
     date_query_sql = "select max(ann_date) date from %s.fina_mainbz" % cfg['mysql']['database']
     last_date = query_last_sync_date(date_query_sql)

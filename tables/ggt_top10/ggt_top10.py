@@ -56,7 +56,7 @@ def sync(drop_exist):
     exec_create_table_script(dir_path, drop_exist)
 
     # 查询历史最大同步日期
-    begin_date = '20100101'
+    begin_date = '20150107'
     cfg = get_cfg()
     date_query_sql = "select max(trade_date) date from %s.ggt_top10" % cfg['mysql']['database']
     last_date = query_last_sync_date(date_query_sql)
@@ -67,4 +67,4 @@ def sync(drop_exist):
 
 
 if __name__ == '__main__':
-    sync(True)
+    sync(False)

@@ -234,7 +234,7 @@ def exec_sync_with_ts_code(table_name, api_name, fields, date_column, start_date
 
     max_retry = 3
     cur_retry = 0
-    while True:
+    while cur_retry < max_retry:
         try:
             # 清理历史数据
             clean_sql = "DELETE FROM %s.%s WHERE %s>='%s' AND %s<='%s'" % \
@@ -295,14 +295,18 @@ def exec_sync_with_ts_code(table_name, api_name, fields, date_column, start_date
                 # 更新下一次微批时间段
                 step_start = step_start + datetime.timedelta(date_step)
                 step_end = min_date(step_end + datetime.timedelta(date_step), end)
-
+            break
         except Exception as e:
             if cur_retry < max_retry:
+                cur_retry += 1
                 logger.error("Get Exception[%s]" % e.__cause__)
                 time.sleep(3)
+                continue
             else:
                 raise e
-        max_retry += 1
+
+
+
 
 
 # fields 字段列表
@@ -332,7 +336,7 @@ def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
 
     max_retry = 3
     cur_retry = 0
-    while True:
+    while cur_retry < max_retry:
         try:
             # 清理历史数据
             clean_sql = "DELETE FROM %s.%s WHERE %s>='%s' AND %s<='%s'" % \
@@ -379,11 +383,13 @@ def exec_sync_with_spec_date_column(table_name, api_name, fields, date_column,
             break
         except Exception as e:
             if cur_retry < max_retry:
+                cur_retry += 1
                 logger.error("Get Exception[%s]" % e.__cause__)
                 time.sleep(3)
             else:
                 raise e
-        cur_retry += 1
+
+
 
 
 def exec_sync_with_spec_date_column_v2(table_name, api_name, fields, date_column,
@@ -460,11 +466,12 @@ def exec_sync_with_spec_date_column_v2(table_name, api_name, fields, date_column
             break
         except Exception as e:
             if cur_retry < max_retry:
+                cur_retry += 1
                 logger.error("Get Exception[%s]" % e.__cause__)
                 time.sleep(3)
+                continue
             else:
                 raise e
-        cur_retry += 1
 
 
 if __name__ == '__main__':

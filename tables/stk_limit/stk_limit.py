@@ -57,4 +57,4 @@ def sync(drop_exist):
 
 
 if __name__ == '__main__':
-    sync(True)
+    sync(False)
