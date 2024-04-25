@@ -1,5 +1,12 @@
 # Sync Tushare Data to MySQL - 股票数据获取
 
+
+## 本项目不再更新
+
+## 迁移说明： 因 Tushare 接口限制，转使用 [Akshare](https://akshare.akfamily.xyz/data/stock/stock.html)的数据进行分析
+
+## 迁移地址： [stock_forecasting](https://github.com/AlexLiue/stock_forecasting)
+
 - 同步 [Tushare](https://tushare.pro) 的股票交易数据到本地 MySQL 进行存储, 采用 T + 0 同步方式
 - 首先从 Tushare 拉取全量历史数据
 - 然后每日下午 从 Tushare 拉取当日增量数据
